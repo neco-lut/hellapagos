@@ -3,11 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>サバイバル・イカダ脱出 完全版</title>
+  <title>サバイバル・イカダ脱出 究極版</title>
   <style>
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 12px; text-align: center; }
-    .container { max-width: 480px; margin: 0 auto; background: #1e293b; padding: 16px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); position: relative; overflow: hidden; }
+    body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 12px; text-align: center; transition: background-color 0.4s ease; }
+    
+    /* 画面の状態によるテーマ（白＝全員OK, 暗色/個人カラー＝非公開） */
+    body.public-view { background-color: #f8fafc !important; color: #0f172a !important; }
+    body.public-view .container { background: #ffffff !important; border: 3px solid #0284c7; color: #0f172a !important; box-shadow: 0 0 20px rgba(2,132,199,0.3); }
+    body.public-view .log-box { background: #f1f5f9 !important; color: #334155 !important; border: 1px solid #cbd5e1; }
+    body.public-view .status-board { background: #e2e8f0 !important; color: #0f172a !important; }
+    body.public-view .status-item span { color: #0284c7 !important; }
+
+    .container { max-width: 480px; margin: 0 auto; background: #1e293b; padding: 16px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); position: relative; overflow: hidden; transition: all 0.4s ease; }
     
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .header h1 { margin: 0; color: #fbbf24; font-size: 18px; }
@@ -19,7 +27,6 @@
     .name-input-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
     .name-input-item input { background: #334155; border: 1px solid #475569; color: white; padding: 6px 10px; border-radius: 6px; flex: 1; }
 
-    /* ダッシュボード（木材とイカダを表示） */
     .status-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background: #0f172a; padding: 8px; border-radius: 12px; margin-bottom: 8px; font-size: 11px; }
     .status-item span { display: block; font-size: 16px; font-weight: bold; color: #38bdf8; margin-top: 2px; }
     .prediction-box { background: #451a03; border: 1px solid #b45309; color: #fef3c7; padding: 8px 12px; border-radius: 10px; font-size: 11px; margin-bottom: 10px; text-align: left; line-height: 1.4; }
@@ -44,7 +51,7 @@
     .capsule-item.selected { border: 3px solid #f59e0b; background: #b45309; }
 
     .player-list { display: flex; flex-direction: column; gap: 6px; text-align: left; max-height: 130px; overflow-y: auto; }
-    .player-card { background: #0f172a; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .player-card { background: #0f172a; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: white; }
     .player-card.active { border: 2px solid #fbbf24; }
     .player-card.dead { opacity: 0.3; text-decoration: line-through; }
     .badge { background: #dc2626; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; }
@@ -54,7 +61,7 @@
     .effect-text { font-size: 18px; font-weight: bold; color: #fbbf24; margin-top: 10px; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; padding: 15px; box-sizing: border-box; }
-    .modal-content { background: #1e293b; border: 1px solid #475569; padding: 16px; border-radius: 14px; max-height: 85vh; overflow-y: auto; text-align: left; font-size: 12px; line-height: 1.5; }
+    .modal-content { background: #1e293b; border: 1px solid #475569; padding: 16px; border-radius: 14px; max-height: 85vh; overflow-y: auto; text-align: left; font-size: 12px; line-height: 1.5; color: white; }
   </style>
 </head>
 <body>
@@ -113,18 +120,18 @@
       <button class="btn-main" onclick="startTurn()">天候を確認してターン開始</button>
     </div>
 
-    <!-- 天候発表画面 -->
+    <!-- 天候発表画面（※全員閲覧OK＝白背景） -->
     <div id="weatherScreen" class="overlay-screen" style="display:none;">
       <h2 id="weatherTitle">🌦️ 本日の天候</h2>
       <div id="weatherIconDisplay" style="font-size:60px; margin:10px 0;">🌤️</div>
-      <p id="weatherDescText" style="font-size:14px; color:#fbbf24; font-weight:bold;"></p>
-      <button class="btn-main" onclick="proceedToActionScreen()">行動を選択する</button>
+      <p id="weatherDescText" style="font-size:14px; font-weight:bold;"></p>
+      <button class="btn-main" onclick="proceedToActionScreen()">自分の手札を開く</button>
     </div>
 
-    <!-- 魚釣り用画面（魚マーク5つ） -->
+    <!-- 魚釣り画面 -->
     <div id="fishScreen" class="overlay-screen" style="display:none;">
       <h2>🐟 どの魚ポイントで釣りをする？</h2>
-      <p style="font-size:12px; color:#cbd5e1;">魚マークを1つ選んでタップ！（内訳: 3が1個、2が2個、1が2個）</p>
+      <p style="font-size:12px; color:#cbd5e1;">魚マークを1つ選択！（内訳: 3が1個、2が2個、1が2個）</p>
       <div class="capsule-grid">
         <button class="capsule-item" onclick="selectFishCapsule()">🐟 1</button>
         <button class="capsule-item" onclick="selectFishCapsule()">🐟 2</button>
@@ -134,10 +141,10 @@
       </div>
     </div>
 
-    <!-- 木材集め選択画面（5つの選択肢） -->
+    <!-- 木材集め画面 -->
     <div id="raftScreen" class="overlay-screen" style="display:none;">
       <h2>🪵 森で木材集め（セーフ4枚 / 蛇1枚）</h2>
-      <p style="font-size:12px; color:#cbd5e1;">好きなだけカードを選択して「オープン！」を押してください。<br>蛇が含まれていると<b>今回獲得できる木材が0＆次ターン行動・投票不能！</b></p>
+      <p id="mapNoticeText" style="font-size:11px; color:#38bdf8;"></p>
       <div class="capsule-grid">
         <button id="raftBtn_0" class="capsule-item" onclick="toggleRaftSelect(0)">🪵 A</button>
         <button id="raftBtn_1" class="capsule-item" onclick="toggleRaftSelect(1)">🪵 B</button>
@@ -148,27 +155,27 @@
       <button class="btn-main" onclick="openSelectedRafts()">選択したカードをオープン！</button>
     </div>
 
-    <!-- アイテム獲得内緒画面 -->
+    <!-- アイテム獲得秘密画面 -->
     <div id="drawSecretScreen" class="overlay-screen" style="display:none;">
       <h2>📦 アイテム獲得！（秘密）</h2>
-      <p style="font-size:12px; color:#cbd5e1;">他のみんなには内緒です！あなたが引いたカード:</p>
+      <p style="font-size:12px; color:#cbd5e1;">あなたしか見えません。引いたカード:</p>
       <div id="drawnItemCard" class="item-card" style="background:#1e3a8a; margin:15px 0; padding:12px;"></div>
       <button class="btn-main" onclick="finishTurnAfterDraw()">確認してターン終了</button>
     </div>
 
-    <!-- アイテム使用公開表示 -->
-    <div id="itemAnnouncementScreen" class="overlay-screen" style="display:none;">
-      <h2 id="itemAnnounceTitle">📣 アイテム使用！</h2>
-      <p id="itemAnnounceText" style="font-size:13px; color:#fef3c7; margin:15px 0;"></p>
-      <button class="btn-main" onclick="resumeTurnAfterItem()">自分の手札に戻る</button>
+    <!-- 泥棒被害当事者確認画面 -->
+    <div id="stealSecretScreen" class="overlay-screen" style="display:none;">
+      <h2>🧤 泥棒結果確認</h2>
+      <p id="stealSecretText" style="font-size:13px; margin:15px 0;"></p>
+      <button class="btn-main" onclick="finishStealScreen()">確認した</button>
     </div>
 
-    <!-- アクション選択画面 -->
+    <!-- アクション選択画面（個人カラー背景） -->
     <div id="actionScreen" style="display:none;">
       <div class="my-hand">
         <div class="hand-title">
           <span>🎒 手札 (<span id="currPlayerName"></span>)</span>
-          <span style="font-size:10px; color:#93c5fd;">※冒頭に何枚でも使用可能</span>
+          <span style="font-size:10px; color:#93c5fd;">※個人カラー画面（非公開）</span>
         </div>
         <div id="myItemsList"></div>
       </div>
@@ -192,7 +199,7 @@
     <!-- 回し投票画面 -->
     <div id="votingScreen" class="overlay-screen" style="display:none;">
       <h2 id="voterNameAnnounce">🗳️ 追放投票</h2>
-      <p style="font-size:11px; color:#fca5a5;">資材不足です。スマホを回して匿名で追放したい相手に投票してください。</p>
+      <p style="font-size:11px; color:#fca5a5;">スマホを回して匿名で追放したい相手に投票してください。</p>
       <button id="btnStartVote" class="btn-main" onclick="openVoteForm()">投票画面を開く</button>
       
       <div id="voteChoiceForm" style="display:none; margin-top:12px;">
@@ -210,9 +217,10 @@
 <div id="ruleModal" class="modal">
   <div class="modal-content">
     <h3 style="color:#fbbf24; margin-top:0;">📖 サバイバル・イカダ脱出のルール</h3>
-    <p><b>【目的】</b><br>嵐が来るまでに全員が乗れるだけの「イカダ」を作り、水と食料を確保して無事に脱出すること！</p>
-    <p><b>【木材とイカダ】</b><br>木材 🪵 を 5 個集めるごとに、自動的に「イカダ 🚣‍♂️ 1艘」が組み立てられます！</p>
-    <p><b>【木材集め】</b><br>5枚（セーフ4枚/蛇1枚）から好きな数だけ選択して一気にオープン！蛇を引くと今回増える木材が0個＆次ターン行動・投票不能のペナルティ！</p>
+    <p><b>【画面色の識別ルール】</b><br>
+    ・<b>白色背景:</b> 全員で画面を見てOKです！<br>
+    ・<b>自分のカラー背景:</b> あなた専用の秘密画面です。他人に手札を見られないように注意してください！</p>
+    <p><b>【目的と勝利】</b><br>嵐が来るまでに全員分の「イカダ」を作り、水と食料を確保して無事に脱出すること！</p>
     <button class="btn-main" onclick="toggleModal('ruleModal', false)">閉じる</button>
   </div>
 </div>
@@ -220,14 +228,20 @@
 <!-- アイテム一覧モーダル -->
 <div id="itemModal" class="modal">
   <div class="modal-content">
-    <h3 style="color:#fbbf24; margin-top:0;">📚 アイテムカード一覧</h3>
-    <p><b>【有用カード（全体の約6割）】</b><br>
-    ・🚰 高級水筒 (水 +3) / 🥫 缶詰セット (食料 +3) / 🪵 木の板 (木材 +3)<br>
-    ・🛡️ トタン (ピストルの暗殺攻撃を無効化！)<br>
-    ・🔫 ピストル ＆ 💥 銃弾 (暗殺を実行)<br>
-    ・🪵 棍棒 (投票2票分) / 🐚 ほら貝 (1番手に移動)</p>
-    <p><b>【ハズレカード（全体の約4割）】</b><br>
-    ・🔑 車のキー / 💰 札束 / 👙 水着 / 📄 古新聞 (一切効果なし！)</p>
+    <h3 style="color:#fbbf24; margin-top:0;">📚 全アイテムカード一覧</h3>
+    <p><b>【資源・防具系】</b><br>
+    ・高級水筒 (水+3) / 缶詰 (食料+3) / 木の板 (木材+3)<br>
+    ・🛡️ トタン (ピストル暗殺を自動無効化)<br>
+    ・⛺ 防水シート (晴れでも水+1) / 🩺 救急箱 (ヘビ被害無効)</p>
+    <p><b>【攻撃・妨害・能力系】</b><br>
+    ・🔫 ピストル ＆ 💥 銃弾 (暗殺実行)<br>
+    ・🧤 泥棒の手袋 (相手からランダム奪取)<br>
+    ・🧪 毒薬 (夜に全員に内緒で水か食料を-2)<br>
+    ・✉️ 脅迫状 (投票順が1番手に固定)<br>
+    ・🔭 望遠鏡 (嵐のターン予知) / 🗺️ 秘密の地図 (ヘビ位置透視)<br>
+    ・🚀 発煙筒 (追放決定を1回無効化)<br>
+    ・💣 時限爆弾 (木材-3破壊) / 🍲 人肉スープ (死亡時食料+4)</p>
+    <p><b>【ハズレ（約4割）】</b><br>🔑 車のキー / 💰 札束 / 👙 水着 / 📄 古新聞 (無効)</p>
     <button class="btn-main" onclick="toggleModal('itemModal', false)">閉じる</button>
   </div>
 </div>
@@ -237,6 +251,18 @@
   let currentVoteIndex = 0;
   let tempVotes = [];
   let selectedRaftIndices = [];
+  let activePoisonType = null; // 毒薬の夜セット用
+
+  // プレイヤーカラーの定義
+  const colorPalette = [
+    { name: "レッド", bg: "#451a03", cardBg: "#991b1b" },
+    { name: "ブルー", bg: "#0f172a", cardBg: "#1e3a8a" },
+    { name: "グリーン", bg: "#064e3b", cardBg: "#065f46" },
+    { name: "パープル", bg: "#3b0764", cardBg: "#581c87" },
+    { name: "オレンジ", bg: "#7c2d12", cardBg: "#9a3412" },
+    { name: "ピンク", bg: "#831843", cardBg: "#9d174d" },
+    { name: "シアン", bg: "#164e63", cardBg: "#155e75" }
+  ];
 
   const state = {
     water: 0,
@@ -254,11 +280,19 @@
     { id: "water3", name: "🚰 高級水筒", desc: "水 +3 を獲得", category: "resource" },
     { id: "food3", name: "🥫 缶詰セット", desc: "食料 +3 を獲得", category: "resource" },
     { id: "wood3", name: "🪵 木の板", desc: "木材 +3 を獲得", category: "resource" },
-    { id: "totan", name: "🛡️ トタン", desc: "所持中、ピストルの暗殺攻撃を自動で防御・無効化", category: "tool" },
+    { id: "totan", name: "🛡️ トタン", desc: "ピストル暗殺攻撃を自動防御", category: "tool" },
+    { id: "tarp", name: "⛺ 防水シート", desc: "晴れ(水0)のターンでも自動で水+1獲得", category: "tool" },
+    { id: "medkit", name: "🩺 救急箱", desc: "ヘビ被害時に自動消費で「お休み」回避", category: "tool" },
     { id: "gun", name: "🔫 ピストル", desc: "「銃弾」と揃うと相手を暗殺可能", category: "attack" },
     { id: "bullet", name: "💥 銃弾", desc: "「ピストル」と揃うと相手を暗殺可能", category: "attack" },
-    { id: "club", name: "🪵 棍棒", desc: "追放投票で自分の1票が2票分になる", category: "attack" },
-    { id: "shell", name: "🐚 ほら貝", desc: "使用すると次のラウンドの1番手になる", category: "attack" }
+    { id: "glove", name: "🧤 泥棒の手袋", desc: "指名した相手の手札から1枚盗む", category: "attack" },
+    { id: "poison", name: "🧪 毒薬", desc: "夜の消費時、犯人不明で水か食料を-2減少させる", category: "attack" },
+    { id: "blackmail", name: "✉️ 脅迫状", desc: "所持中、追放投票の番が常に1番手になる", category: "attack" },
+    { id: "scope", name: "🔭 望遠鏡", desc: "嵐が来るまでの残りターン数と明日の天候を予知", category: "utility" },
+    { id: "map", name: "🗺️ 秘密の地図", desc: "木材集めでヘビカードの場所を1箇所透視できる", category: "utility" },
+    { id: "flare", name: "🚀 発煙筒", desc: "自分が追放決定された時、追放を無効化する", category: "utility" },
+    { id: "bomb", name: "💣 時限爆弾", desc: "木材を即座に-3破壊する", category: "utility" },
+    { id: "soup", name: "🍲 人肉スープ", desc: "誰かが死亡・追放された時に食料+4獲得", category: "utility" }
   ];
 
   const junkItems = [
@@ -290,6 +324,21 @@
     document.getElementById(modalId).style.display = show ? 'block' : 'none';
   }
 
+  // 画面の「全員公開(白)」と「個人カラー(非公開)」の切り替え
+  function setScreenTheme(isPublic, player = null) {
+    if (isPublic) {
+      document.body.className = "public-view";
+      document.querySelector('.container').style.background = "#ffffff";
+    } else {
+      document.body.className = "";
+      if (player && player.color) {
+        document.querySelector('.container').style.background = player.color.bg;
+      } else {
+        document.querySelector('.container').style.background = "#0f172a";
+      }
+    }
+  }
+
   function startGame() {
     state.water = playerCount * 2;
     state.food = playerCount * 2;
@@ -303,12 +352,14 @@
     for (let i = 1; i <= playerCount; i++) {
       const inputVal = document.getElementById(`pName_${i}`).value.trim();
       const initialHand = [getRandomItem(), getRandomItem(), getRandomItem()];
-      
+      const color = colorPalette[(i - 1) % colorPalette.length];
+
       state.players.push({
         id: i - 1,
         name: inputVal || `プレイヤー ${i}`,
         alive: true,
         items: initialHand,
+        color: color,
         isBittenBySnake: false
       });
     }
@@ -316,7 +367,7 @@
     document.getElementById('setupPanel').style.display = 'none';
     document.getElementById('gamePanel').style.display = 'block';
 
-    log(`<b>--- サバイバル開始（全員手札3枚）---</b>`);
+    log(`<b>--- サバイバル開始（全員手札3枚配付）---</b>`);
     determineWeatherForRound();
     prepareTurn();
   }
@@ -343,7 +394,6 @@
     setTimeout(() => layer.classList.remove('effect-active'), 1200);
   }
 
-  // 木材が5個集まると自動的にイカダ1艘に変換
   function checkWoodToRaft() {
     while (state.wood >= 5) {
       state.wood -= 5;
@@ -374,11 +424,22 @@
     const p = state.players[state.currentTurnIndex];
 
     if (p.isBittenBySnake) {
-      log(`⚠️ <b>${p.name}</b> はヘビ毒の影響で今ターン行動不可（お休み）です。`);
-      p.isBittenBySnake = false;
-      setTimeout(nextTurn, 1000);
-      return;
+      // 救急箱の自動判定
+      const medIdx = p.items.findIndex(i => i.id === 'medkit');
+      if (medIdx !== -1) {
+        p.items.splice(medIdx, 1);
+        p.isBittenBySnake = false;
+        log(`🩺 <b>${p.name}</b> は「救急箱」を消費してヘビ毒の治療に成功！通常通り行動できます！`);
+      } else {
+        log(`⚠️ <b>${p.name}</b> はヘビ毒の影響で今ターン行動不可（お休み）です。`);
+        p.isBittenBySnake = false;
+        setTimeout(nextTurn, 1000);
+        return;
+      }
     }
+
+    // パス画面は個人カラー設定
+    setScreenTheme(false, p);
 
     document.getElementById('passScreen').style.display = 'block';
     document.getElementById('weatherScreen').style.display = 'none';
@@ -386,7 +447,7 @@
     document.getElementById('fishScreen').style.display = 'none';
     document.getElementById('raftScreen').style.display = 'none';
     document.getElementById('drawSecretScreen').style.display = 'none';
-    document.getElementById('itemAnnouncementScreen').style.display = 'none';
+    document.getElementById('stealSecretScreen').style.display = 'none';
     document.getElementById('votingScreen').style.display = 'none';
     
     document.getElementById('turnAnnounce').innerText = `📱 ${p.name} のターン (${state.currentRound}ターン目)`;
@@ -394,6 +455,10 @@
   }
 
   function startTurn() {
+    const p = state.players[state.currentTurnIndex];
+    // 天候画面は「全員公開（白）」画面！
+    setScreenTheme(true);
+
     document.getElementById('passScreen').style.display = 'none';
     document.getElementById('weatherScreen').style.display = 'block';
 
@@ -420,9 +485,19 @@
   }
 
   function proceedToActionScreen() {
+    const p = state.players[state.currentTurnIndex];
+    // アクション・手札画面は再び「個人カラー（非公開）」背景
+    setScreenTheme(false, p);
+
     document.getElementById('weatherScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'block';
-    document.getElementById('waterActionLabel').innerText = `獲得量: ${state.currentWeatherRain} 💧`;
+    
+    // 防水シートの判定
+    const hasTarp = p.items.some(i => i.id === 'tarp');
+    let displayWater = state.currentWeatherRain;
+    if (state.currentWeatherRain === 0 && hasTarp) displayWater = 1;
+
+    document.getElementById('waterActionLabel').innerText = `獲得量: ${displayWater} 💧 ${hasTarp && state.currentWeatherRain===0 ? '(シート効果)' : ''}`;
     renderMyHand();
   }
 
@@ -448,8 +523,8 @@
       
       if ((item.id === 'gun' || item.id === 'bullet') && !(hasGun && hasBullet)) {
         btnHtml = `<span style="font-size:9px; color:#fca5a5;">両方必要</span>`;
-      } else if (item.category === 'junk' || item.id === 'totan') {
-        btnHtml = `<span style="font-size:9px; color:#94a3b8;">自動・効果なし</span>`;
+      } else if (item.category === 'junk' || item.id === 'totan' || item.id === 'tarp' || item.id === 'medkit' || item.id === 'blackmail' || item.id === 'flare') {
+        btnHtml = `<span style="font-size:9px; color:#94a3b8;">自動・特殊</span>`;
       }
 
       card.innerHTML = `
@@ -483,11 +558,53 @@
           p.items = p.items.filter(i => i.id !== 'gun' && i.id !== 'bullet');
           log(`<span style="color:#f87171;">🔫 <b>${p.name}</b> がピストルで <b>${victim.name}</b> を暗殺しました！</span>`);
           showEffect('💥', `${victim.name} が暗殺された！`);
+          triggerSoup();
         }
       } else {
         alert("該当する生存者がいません");
         return;
       }
+    } else if (item.id === 'glove') { // 泥棒の手袋
+      const targetName = prompt("アイテムを奪う相手の名前を入力してください:");
+      const victim = state.players.find(pl => pl.alive && pl.name === targetName && pl.id !== p.id);
+      if (victim && victim.items.length > 0) {
+        const stolenIdx = Math.floor(Math.random() * victim.items.length);
+        const stolenItem = victim.items.splice(stolenIdx, 1)[0];
+        p.items.push(stolenItem);
+        p.items.splice(itemIndex, 1);
+
+        log(`🧤 <b>${p.name}</b> が <b>${victim.name}</b> から泥棒の手袋でアイテムを1枚奪い取った！（カード名は非公開）`);
+        
+        document.getElementById('actionScreen').style.display = 'none';
+        document.getElementById('stealSecretScreen').style.display = 'block';
+        document.getElementById('stealSecretText').innerText = `【当事者確認】\n${p.name} は ${victim.name} から 『${stolenItem.name}』 を奪い取りました！`;
+        return;
+      } else {
+        alert("該当する生存者、または奪える手札が存在しません");
+        return;
+      }
+    } else if (item.id === 'poison') { // 毒薬
+      const choice = prompt("今夜減少させる資源を選んでください (1: 水 -2,  2: 食料 -2)");
+      if (choice === "1") activePoisonType = "water";
+      else if (choice === "2") activePoisonType = "food";
+      else return;
+
+      p.items.splice(itemIndex, 1);
+      log(`🧪 誰かが密かに「毒薬」をセットした...（効果は夜に発動）`);
+      showEffect('🧪', '毒薬がセットされた...');
+    } else if (item.id === 'scope') { // 望遠鏡
+      p.items.splice(itemIndex, 1);
+      alert(`🔭 【望遠鏡の予知】\n・明日の天候雨量: ${Math.floor(Math.random() * 4)} 💧\n・嵐の発生: 6〜13ターン目に到来`);
+    } else if (item.id === 'map') { // 秘密の地図
+      p.items.splice(itemIndex, 1);
+      const snakeLoc = Math.floor(Math.random() * 5);
+      const locNames = ["A", "B", "C", "D", "E"];
+      alert(`🗺️ 【秘密の地図】\nヘビはカード 『${locNames[snakeLoc]}』 に潜んでいます！`);
+    } else if (item.id === 'bomb') { // 時限爆弾
+      p.items.splice(itemIndex, 1);
+      state.wood = Math.max(0, state.wood - 3);
+      log(`💣 <b>${p.name}</b> が「時限爆弾」を使用！木材が -3 個破壊された！`);
+      showEffect('💣', '木材-3 破壊！');
     } else {
       p.items.splice(itemIndex, 1);
       if (item.id === 'water3') state.water += 3;
@@ -501,15 +618,12 @@
       showEffect('✨', `${item.name} を使用！`);
     }
 
-    document.getElementById('actionScreen').style.display = 'none';
-    document.getElementById('itemAnnouncementScreen').style.display = 'block';
-    document.getElementById('itemAnnounceTitle').innerText = `📣 ${p.name} がアイテムを使用！`;
-    document.getElementById('itemAnnounceText').innerText = `使用カード: 『${item.name}』\n【効果】 ${item.desc}`;
+    renderMyHand();
     updateUI();
   }
 
-  function resumeTurnAfterItem() {
-    document.getElementById('itemAnnouncementScreen').style.display = 'none';
+  function finishStealScreen() {
+    document.getElementById('stealSecretScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'block';
     renderMyHand();
   }
@@ -518,7 +632,10 @@
     const p = state.players[state.currentTurnIndex];
 
     if (type === 'water') {
-      const gainedWater = state.currentWeatherRain;
+      const hasTarp = p.items.some(i => i.id === 'tarp');
+      let gainedWater = state.currentWeatherRain;
+      if (state.currentWeatherRain === 0 && hasTarp) gainedWater = 1;
+
       state.water += gainedWater;
       log(`${p.name}: 水を汲んだ！（+${gainedWater} 💧）`);
       showEffect('💧', `水 +${gainedWater} を獲得！`);
@@ -547,9 +664,12 @@
 
   function selectFishCapsule() {
     const p = state.players[state.currentTurnIndex];
-    const fishPool = [3, 2, 2, 1, 1];
-    const caught = fishPool[Math.floor(Math.random() * fishPool.length)];
+    let fishPool = [3, 2, 2, 1, 1];
+    let caught = fishPool[Math.floor(Math.random() * fishPool.length)];
     
+    // 生け簀のパッシブ効果（+1）
+    if (p.items.some(i => i.id === 'fish_farm')) caught += 1;
+
     state.food += caught;
     log(`${p.name}: 魚を ${caught} 匹釣り上げた！`);
     document.getElementById('fishScreen').style.display = 'none';
@@ -599,7 +719,7 @@
       state.wood += count;
       log(`${p.name}: 無事に木材を ${count} 個獲得した！`);
       showEffect('🪵', `木材 +${count} 個獲得！`);
-      checkWoodToRaft(); // 木材5個以上でイカダ自動生成
+      checkWoodToRaft();
     }
 
     setTimeout(nextTurn, 1400);
@@ -627,11 +747,33 @@
     }
   }
 
+  function triggerSoup() {
+    state.players.filter(p => p.alive).forEach(p => {
+      const soupCount = p.items.filter(i => i.id === 'soup').length;
+      if (soupCount > 0) {
+        state.food += (soupCount * 4);
+        log(`🍲 <b>${p.name}</b> の「人肉スープ」が発動！食料 +${soupCount * 4} を獲得...`);
+      }
+    });
+  }
+
   function checkRoundEnd() {
     const alivePlayers = state.players.filter(p => p.alive);
     const needed = alivePlayers.length;
 
     log(`<b>--- ${state.currentRound}ターン目が終了（必要数: 💧${needed} / 🐟${needed}）---</b>`);
+    
+    // 毒薬の夜発動
+    if (activePoisonType === "water") {
+      state.water = Math.max(0, state.water - 2);
+      log(`<span style="color:#f87171;">🧪 <b>犯人不明の毒薬により、水が -2 減少した！</b></span>`);
+      activePoisonType = null;
+    } else if (activePoisonType === "food") {
+      state.food = Math.max(0, state.food - 2);
+      log(`<span style="color:#f87171;">🧪 <b>犯人不明の毒薬により、食料が -2 減少した！</b></span>`);
+      activePoisonType = null;
+    }
+
     state.water -= needed;
     state.food -= needed;
 
@@ -662,6 +804,15 @@
 
     tempVotes = [];
     currentVoteIndex = 0;
+
+    // 脅迫状を持っているプレイヤーを1番手にソート/配置
+    const alivePlayers = state.players.filter(p => p.alive);
+    const blackmailVoterIdx = alivePlayers.findIndex(p => p.items.some(i => i.id === 'blackmail'));
+    if (blackmailVoterIdx !== -1 && blackmailVoterIdx !== 0) {
+      const bPlayer = alivePlayers.splice(blackmailVoterIdx, 1)[0];
+      alivePlayers.unshift(bPlayer);
+    }
+
     prepareNextVoter();
   }
 
@@ -681,6 +832,9 @@
       return;
     }
 
+    // 投票画面も個人カラー背景
+    setScreenTheme(false, voter);
+
     document.getElementById('btnStartVote').style.display = 'block';
     document.getElementById('voteChoiceForm').style.display = 'none';
     document.getElementById('voterNameAnnounce').innerText = `🗳️ ${voter.name} の投票番`;
@@ -690,20 +844,19 @@
     document.getElementById('btnStartVote').style.display = 'none';
     document.getElementById('voteChoiceForm').style.display = 'block';
 
-    const voter = state.players.filter(p => p.alive)[currentVoteIndex];
-    const candidates = state.players.filter(p => p.alive && p.id !== voter.id);
+    const alivePlayers = state.players.filter(p => p.alive);
+    const voter = alivePlayers[currentVoteIndex];
+    const candidates = alivePlayers.filter(p => p.id !== voter.id);
 
     const container = document.getElementById('voteCandidates');
     container.innerHTML = '';
-
-    const hasClub = voter.items.some(i => i.id === 'club');
 
     candidates.forEach(c => {
       const btn = document.createElement('button');
       btn.className = 'capsule-btn';
       btn.style.background = '#dc2626';
-      btn.innerText = `👉 ${c.name} に投票 ${hasClub ? '(棍棒効果:2票分)' : ''}`;
-      btn.onclick = () => castVote(c.id, hasClub ? 2 : 1);
+      btn.innerText = `👉 ${c.name} に投票`;
+      btn.onclick = () => castVote(c.id, 1);
       container.appendChild(btn);
     });
   }
@@ -717,6 +870,9 @@
   }
 
   function tallyVotes() {
+    // 投票結果・集計画面は「全員公開（白）」画面！
+    setScreenTheme(true);
+
     const counts = {};
     tempVotes.forEach(id => counts[id] = (counts[id] || 0) + 1);
 
@@ -730,8 +886,18 @@
     }
 
     const victim = state.players.find(p => p.id == victimId);
-    victim.alive = false;
-    log(`<span style="color:#f87171;">💀 投票の結果、<b>${victim.name}</b> が追放されました...</span>`);
+
+    // 発煙筒の自動無効化判定
+    const flareIdx = victim.items.findIndex(i => i.id === 'flare');
+    if (flareIdx !== -1) {
+      victim.items.splice(flareIdx, 1);
+      log(`🚀 <b>${victim.name}</b> が「発煙筒」を発射！今回の追放投票結果が無効化されました！`);
+      showEffect('🚀', `${victim.name} が発煙筒で九死に一生！`);
+    } else {
+      victim.alive = false;
+      log(`<span style="color:#f87171;">💀 投票の結果、<b>${victim.name}</b> が追放されました...</span>`);
+      triggerSoup();
+    }
 
     if (state.water < 0) state.water = 0;
     if (state.food < 0) state.food = 0;
@@ -740,12 +906,13 @@
   }
 
   function endGame() {
+    setScreenTheme(true);
     const alive = state.players.filter(p => p.alive);
     log(`<b>🌪️ 嵐（最終ターン）が終了！脱出判定を行います！</b>`);
     if (state.raft >= alive.length) {
-      log(`<span style="color:#4ade80;">🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で無事に脱出成功！勝者！</span>`);
+      log(`<span style="color:#16a34a; font-size:16px;"><b>🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で無事に脱出成功！勝者！</b></span>`);
     } else {
-      log(`<span style="color:#f87171;">💀 イカダ不足のため全員が嵐に飲み込まれた... GAME OVER</span>`);
+      log(`<span style="color:#f87171; font-size:16px;"><b>💀 イカダ不足のため全員が嵐に飲み込まれた... GAME OVER</b></span>`);
     }
     document.getElementById('passScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'none';
@@ -780,6 +947,7 @@
       const card = document.createElement('div');
       const isCurrent = idx === state.currentTurnIndex;
       card.className = `player-card ${isCurrent ? 'active' : ''} ${p.alive ? '' : 'dead'}`;
+      card.style.backgroundColor = p.color.cardBg;
       
       card.innerHTML = `
         <span>${isCurrent ? '👉 ' : ''}${p.name} ${p.isBittenBySnake ? '🐍' : ''}</span>
