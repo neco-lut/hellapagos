@@ -2,87 +2,137 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>サバイバル・イカダ脱出（回しプレイ版）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>サバイバル・イカダ脱出</title>
   <style>
-    * { box-sizing: border-box; font-family: sans-serif; }
-    body { background-color: #2c3e50; color: #ecf0f1; margin: 0; padding: 15px; text-align: center; }
-    .container { max-width: 500px; margin: 0 auto; background: #34495e; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    h1 { margin-top: 0; color: #f1c40f; font-size: 20px; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #1e293b; color: #f8fafc; margin: 0; padding: 12px; text-align: center; }
+    .container { max-width: 480px; margin: 0 auto; background: #0f172a; padding: 16px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+    h1 { margin: 0 0 10px 0; color: #fbbf24; font-size: 20px; display: flex; justify-content: space-between; align-items: center; }
+    
+    /* タブ・ボタン */
+    .rule-tab-btn { background: #334155; color: #f8fafc; border: 1px solid #475569; padding: 4px 10px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+    
+    /* 入力フォーム・設定 */
+    .setup-panel { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
+    .name-input-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; margin: 10px 0; }
+    .name-input-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .name-input-item input { background: #334155; border: 1px solid #475569; color: white; padding: 6px 10px; border-radius: 6px; flex: 1; }
 
-    /* 設定パネル */
-    .setup-panel { background: #1a252f; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-    .count-control { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0; }
-    .count-btn { background: #2980b9; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 20px; font-weight: bold; cursor: pointer; }
-    .start-btn { background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; }
+    /* ダッシュボード */
+    .status-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #1e293b; padding: 10px; border-radius: 10px; margin-bottom: 8px; font-size: 12px; }
+    .status-item span { display: block; font-size: 18px; font-weight: bold; color: #38bdf8; margin-top: 2px; }
+    
+    /* 予測・警報エリア */
+    .prediction-box { background: #451a03; border: 1px solid #b45309; color: #fef3c7; padding: 8px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 10px; text-align: left; line-height: 1.4; }
+    .prediction-title { font-weight: bold; color: #fbbf24; display: block; margin-bottom: 2px; }
 
-    /* ステータス・ログ */
-    .status-board { display: flex; justify-content: space-around; background: #1a252f; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
-    .status-board span { display: block; font-size: 18px; font-weight: bold; color: #3498db; }
-    .log-box { background: #1a252f; height: 120px; overflow-y: auto; text-align: left; padding: 8px; font-size: 12px; border-radius: 6px; margin-bottom: 10px; color: #bdc3c7; line-height: 1.4; }
+    .log-box { background: #020617; height: 100px; overflow-y: auto; text-align: left; padding: 8px; font-size: 11px; border-radius: 8px; margin-bottom: 10px; color: #94a3b8; line-height: 1.4; }
 
-    /* ターン交代用オーバーレイ（手札隠し） */
-    .pass-screen { background: #1a252f; border: 2px solid #f39c12; padding: 20px; border-radius: 8px; margin-bottom: 15px; }
-    .pass-screen h2 { color: #f39c12; margin-top: 0; }
+    /* 画面切り替え（モーダル・オーバーレイ） */
+    .overlay-screen { background: #0f172a; border: 2px solid #f59e0b; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
+    .overlay-screen h2 { color: #f59e0b; margin-top: 0; font-size: 18px; }
 
-    /* アクション・手札エリア */
-    .my-hand { background: #2980b9; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: left; font-size: 13px; }
-    .my-hand-title { font-weight: bold; color: #f1c40f; margin-bottom: 5px; }
-    .action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-    .act-btn { background: #e67e22; border: none; color: white; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
+    /* 手札・アイテムエリア */
+    .my-hand { background: #1e3a8a; padding: 12px; border-radius: 10px; margin-bottom: 10px; text-align: left; }
+    .hand-title { font-weight: bold; color: #fbbf24; font-size: 13px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .item-card { background: #1e293b; border: 1px solid #3b82f6; padding: 8px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .item-desc { color: #93c5fd; font-size: 11px; display: block; }
+    .use-btn { background: #2563eb; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer; }
+
+    /* アクションボタン */
+    .action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .act-btn { background: #d97706; border: none; color: white; padding: 12px 8px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
+    .btn-main { background: #16a34a; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; width: 100%; cursor: pointer; }
 
     /* プレイヤーリスト */
-    .player-list { display: flex; flex-direction: column; gap: 6px; text-align: left; max-height: 180px; overflow-y: auto; }
-    .player-card { background: #2c3e50; padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-    .player-card.active { border: 2px solid #f1c40f; background: #34495e; }
-    .player-card.dead { opacity: 0.4; text-decoration: line-through; }
-    .badge { background: #e74c3c; color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px; }
+    .player-list { display: flex; flex-direction: column; gap: 6px; text-align: left; max-height: 150px; overflow-y: auto; }
+    .player-card { background: #1e293b; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .player-card.active { border: 2px solid #fbbf24; }
+    .player-card.dead { opacity: 0.3; text-decoration: line-through; }
+    .badge { background: #dc2626; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; }
+
+    /* エフェクト演出演出 */
+    .effect-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; justify-content: center; align-items: center; font-size: 80px; opacity: 0; transition: all 0.5s ease-out; z-index: 100; }
+    .effect-active { opacity: 1; transform: scale(1.3); }
+
+    /* ルール表示モーダル */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; padding: 20px; box-sizing: border-box; }
+    .modal-content { background: #0f172a; border: 1px solid #475569; padding: 16px; border-radius: 12px; max-height: 85vh; overflow-y: auto; text-align: left; font-size: 13px; line-height: 1.6; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>🏝️ サバイバル・イカダ脱出</h1>
+  <!-- 演出用レイヤー -->
+  <div id="effectLayer" class="effect-overlay">💧</div>
 
-  <!-- 設定パネル -->
+  <h1>
+    <span>🏝️ イカダ脱出</span>
+    <button class="rule-tab-btn" onclick="toggleRuleModal(true)">📖 ルール</button>
+  </h1>
+
+  <!-- 設定画面 -->
   <div id="setupPanel" class="setup-panel">
-    <h3>プレイヤー人数の選択</h3>
-    <div class="count-control">
-      <button class="count-btn" onclick="changeCount(-1)">ー</button>
-      <span id="playerCountDisplay" style="font-size:22px; font-weight:bold; color:#f1c40f;">4人</span>
-      <button class="count-btn" onclick="changeCount(1)">＋</button>
+    <h3 style="margin-top:0;">1. 参加人数の設定</h3>
+    <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+      <button onclick="changeCount(-1)" style="width:30px; height:30px; border-radius:50%; border:none; background:#334155; color:white;">ー</button>
+      <span id="playerCountDisplay" style="font-size:18px; font-weight:bold; color:#fbbf24;">4人</span>
+      <button onclick="changeCount(1)" style="width:30px; height:30px; border-radius:50%; border:none; background:#334155; color:white;">＋</button>
     </div>
-    <button class="start-btn" onclick="startGame()">ゲーム開始！</button>
+
+    <h3>2. プレイヤー名の設定</h3>
+    <div id="nameInputList" class="name-input-list"></div>
+
+    <button class="btn-main" onclick="startGame()" style="margin-top:10px;">サバイバルを開始！</button>
   </div>
 
-  <!-- メインゲームエリア -->
-  <div id="gamePanel" style="display: none;">
+  <!-- メインゲーム画面 -->
+  <div id="gamePanel" style="display:none;">
     
+    <!-- ダッシュボード -->
     <div class="status-board">
       <div>💧 水<span id="water">0</span></div>
       <div>🐟 食料<span id="food">0</span></div>
       <div>🪵 イカダ<span id="raft">0</span></div>
-      <div>📅 残り日数<span id="days">6</span></div>
+      <div>📅 残り<span id="days">6日</span></div>
+    </div>
+
+    <!-- 予測・不足警告表示 -->
+    <div class="prediction-box">
+      <span class="prediction-title">📊 今夜の状況予測</span>
+      <div id="predictionText">集計中...</div>
     </div>
 
     <div id="log" class="log-box"></div>
 
-    <!-- 交代案内画面（手札保護） -->
-    <div id="passScreen" class="pass-screen">
-      <h2 id="turnAnnounce">プレイヤー1 のターン</h2>
-      <p style="font-size:13px; color:#ecf0f1;">スマホを渡してください。<br>準備ができたら下のボタンを押して手札を確認してください。</p>
-      <button class="start-btn" onclick="startTurn()">手札を確認してプレイ開始</button>
+    <!-- ターン開始確認画面（画面隠し） -->
+    <div id="passScreen" class="overlay-screen">
+      <h2 id="turnAnnounce">〇〇のターン</h2>
+      <p style="font-size:12px; color:#cbd5e1;">スマホを対象者に渡してください。<br>自分以外に見られないように準備ができたら開いてください。</p>
+      <button class="btn-main" onclick="startTurn()">手札を確認してターン開始</button>
     </div>
 
-    <!-- プレイ操作画面 -->
-    <div id="actionScreen" style="display: none;">
-      <!-- 自分の手札表示 -->
+    <!-- アイテム使用発表画面（手札隠し状態での発表） -->
+    <div id="itemAnnouncementScreen" class="overlay-screen" style="display:none;">
+      <h2 id="itemAnnounceTitle">📣 アイテム使用！</h2>
+      <p id="itemAnnounceText" style="font-size:14px; color:#fef3c7; margin:15px 0;"></p>
+      <button class="btn-main" onclick="resumeTurnAfterItem()">自分の手札に戻る</button>
+    </div>
+
+    <!-- アクション実行画面 -->
+    <div id="actionScreen" style="display:none;">
+      
+      <!-- 自分の手札（アイテム自由使用） -->
       <div class="my-hand">
-        <div class="my-hand-title">🎒 あなた（<span id="currPlayerName"></span>）の所持アイテム:</div>
-        <div id="myItemsList">なし</div>
+        <div class="hand-title">
+          <span>🎒 あなたの手札 (<span id="currPlayerName"></span>)</span>
+          <span style="font-size:11px; color:#93c5fd;">※ターン冒頭に何枚でも使えます</span>
+        </div>
+        <div id="myItemsList"></div>
       </div>
 
-      <!-- アクション選択 -->
+      <!-- メインアクション -->
       <div class="action-group">
         <button class="act-btn" onclick="takeAction('water')">💧 水を汲む</button>
         <button class="act-btn" onclick="takeAction('food')">🐟 魚を釣る</button>
@@ -91,15 +141,48 @@
       </div>
     </div>
 
-    <h3>参加者の状態（アイテム枚数）</h3>
-    <div id="playerList" class="player-list"></div>
+    <!-- 追放・投票フェーズ画面（回し投票） -->
+    <div id="votingScreen" class="overlay-screen" style="display:none;">
+      <h2 id="voterNameAnnounce">🗳️ 投票フェーズ</h2>
+      <p style="font-size:12px; color:#fca5a5;">資源不足のため追放者を選びます。<br>スマホを回して匿名で追放したい人物に投票してください。</p>
+      <button id="btnStartVote" class="btn-main" onclick="openVoteForm()">投票画面を開く</button>
+      
+      <div id="voteChoiceForm" style="display:none; margin-top:15px;">
+        <p style="font-size:12px;">追放したいプレイヤーを選択（時間無制限）:</p>
+        <div id="voteCandidates" style="display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+    </div>
 
+    <h3>生存者の手札枚数</h3>
+    <div id="playerList" class="player-list"></div>
+  </div>
+</div>
+
+<!-- ルール説明用モーダル -->
+<div id="ruleModal" class="modal">
+  <div class="modal-content">
+    <h2 style="color:#fbbf24; margin-top:0;">📖 サバイバル・イカダ脱出のルール</h2>
+    <p><b>【目的】</b><br>ハリケーンが来る（6日目の終わり）までに、全員が乗れるだけの「イカダ」を作り、全員で無事に脱出することです！</p>
+    <p><b>【1日（1ラウンド）の流れ】</b><br>
+    1. 各プレイヤーが順番に以下のアクションから1つを実行します。<br>
+    ・💧 水を汲む（雨量に応じて獲得）<br>
+    ・🐟 魚を釣る（1〜3個獲得）<br>
+    ・🪵 イカダを作る（1艘完成）<br>
+    ・📦 アイテム捜索（便利カード獲得）<br><br>
+    ※ターン冒頭には持っているアイテムを好きなだけ使用できます！</p>
+    <p><b>【夜の消費と追放】</b><br>
+    全員のターンが終わると夜が訪れ、<b>生存者1人あたり「水1・食料1」</b>を消費します。<br>
+    もし不足した場合、スマホを順番に回して<b>「匿名追放投票」</b>を行います。最も多く票を集めた人が島から追放（ゲームオーバー）されます。</p>
+    <p><b>【脱出条件】</b><br>
+    6日目の終わりに、<b>「イカダの数 ≥ 生存者の人数」</b>であれば生き残った全員の勝ちです！</p>
+    <button class="btn-main" onclick="toggleRuleModal(false)" style="margin-top:10px;">閉じる</button>
   </div>
 </div>
 
 <script>
   let playerCount = 4;
-  let gameActive = false;
+  let currentVoteIndex = 0;
+  let tempVotes = [];
 
   const state = {
     water: 0,
@@ -110,15 +193,38 @@
     players: []
   };
 
-  const itemsPool = ["水筒 (水+3)", "缶詰 (食料+3)", "木箱 (イカダ+1)", "釣り竿", "ナイフ"];
+  // アイテム定義（効果・説明）
+  const itemMaster = [
+    { name: "🚰 高級水筒", desc: "水 +3 を即座に獲得", type: "water", val: 3 },
+    { name: "🥫 缶詰セット", desc: "食料 +3 を即座に獲得", type: "food", val: 3 },
+    { name: "🔨 大工道具", desc: "イカダ +1 艘を即座に完成", type: "raft", val: 1 },
+    { name: "🎣 魔法の釣竿", desc: "食料 +2 を即座に獲得", type: "food", val: 2 },
+    { name: "浄水フィルター", desc: "水 +2 を即座に獲得", type: "water", val: 2 }
+  ];
 
   function changeCount(delta) {
     playerCount = Math.min(10, Math.max(2, playerCount + delta));
     document.getElementById('playerCountDisplay').innerText = `${playerCount}人`;
+    renderNameInputs();
+  }
+
+  function renderNameInputs() {
+    const container = document.getElementById('nameInputList');
+    container.innerHTML = '';
+    for (let i = 1; i <= playerCount; i++) {
+      const div = document.createElement('div');
+      div.className = 'name-input-item';
+      div.innerHTML = `<span>P${i}:</span><input type="text" id="pName_${i}" value="プレイヤー ${i}">`;
+      container.appendChild(div);
+    }
+  }
+  renderNameInputs();
+
+  function toggleRuleModal(show) {
+    document.getElementById('ruleModal').style.display = show ? 'block' : 'none';
   }
 
   function startGame() {
-    gameActive = true;
     state.water = playerCount * 2;
     state.food = playerCount * 2;
     state.raft = 0;
@@ -127,19 +233,29 @@
 
     state.players = [];
     for (let i = 1; i <= playerCount; i++) {
+      const inputVal = document.getElementById(`pName_${i}`).value.trim();
+      // 初期手札3枚をランダム付与
+      const initialHand = [
+        getRandomItem(), getRandomItem(), getRandomItem()
+      ];
+      
       state.players.push({
         id: i - 1,
-        name: `プレイヤー ${i}`,
+        name: inputVal || `プレイヤー ${i}`,
         alive: true,
-        items: []
+        items: initialHand
       });
     }
 
     document.getElementById('setupPanel').style.display = 'none';
     document.getElementById('gamePanel').style.display = 'block';
 
-    log(`<b>--- サバイバル開始（全${playerCount}人）---</b>`);
+    log(`<b>--- サバイバル開始！全員手札3枚を所持 ---</b>`);
     prepareTurn();
+  }
+
+  function getRandomItem() {
+    return itemMaster[Math.floor(Math.random() * itemMaster.length)];
   }
 
   function log(msg) {
@@ -148,26 +264,87 @@
     box.scrollTop = box.scrollHeight;
   }
 
-  // ターン準備（スマホを渡す画面を表示）
+  // エフェクト演出
+  function triggerEffect(emoji) {
+    const layer = document.getElementById('effectLayer');
+    layer.innerText = emoji;
+    layer.classList.add('effect-active');
+    setTimeout(() => {
+      layer.classList.remove('effect-active');
+    }, 600);
+  }
+
+  // ターン準備画面（非表示）
   function prepareTurn() {
     const p = state.players[state.currentTurnIndex];
     document.getElementById('passScreen').style.display = 'block';
     document.getElementById('actionScreen').style.display = 'none';
+    document.getElementById('itemAnnouncementScreen').style.display = 'none';
+    document.getElementById('votingScreen').style.display = 'none';
     document.getElementById('turnAnnounce').innerText = `📱 ${p.name} のターン`;
     updateUI();
   }
 
-  // 「プレイ開始」を押したら自分の手札とアクションを表示
   function startTurn() {
-    const p = state.players[state.currentTurnIndex];
     document.getElementById('passScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'block';
-    
-    document.getElementById('currPlayerName').innerText = p.name;
-    const itemList = document.getElementById('myItemsList');
-    itemList.innerText = p.items.length > 0 ? p.items.join(', ') : 'なし';
+    renderMyHand();
   }
 
+  // 自分の手札レンダリング
+  function renderMyHand() {
+    const p = state.players[state.currentTurnIndex];
+    document.getElementById('currPlayerName').innerText = p.name;
+    const container = document.getElementById('myItemsList');
+    container.innerHTML = '';
+
+    if (p.items.length === 0) {
+      container.innerHTML = '<span style="font-size:12px; color:#cbd5e1;">持っているアイテムはありません</span>';
+      return;
+    }
+
+    p.items.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      card.innerHTML = `
+        <div>
+          <b>${item.name}</b>
+          <span class="item-desc">${item.desc}</span>
+        </div>
+        <button class="use-btn" onclick="useItem(${idx})">使用する</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // アイテム使用処理
+  function useItem(itemIndex) {
+    const p = state.players[state.currentTurnIndex];
+    const item = p.items.splice(itemIndex, 1)[0];
+
+    if (item.type === 'water') state.water += item.val;
+    if (item.type === 'food') state.food += item.val;
+    if (item.type === 'raft') state.raft += item.val;
+
+    log(`<b>【アイテム使用】</b> ${p.name} が「${item.name}」を使用！ (${item.desc})`);
+
+    // 手札を隠して効果をみんなに見せる画面に遷移
+    document.getElementById('actionScreen').style.display = 'none';
+    document.getElementById('itemAnnouncementScreen').style.display = 'block';
+    document.getElementById('itemAnnounceTitle').innerText = `📣 ${p.name} がアイテムを使用！`;
+    document.getElementById('itemAnnounceText').innerText = `使ったカード: 『${item.name}』\n【効果】 ${item.desc}`;
+    
+    triggerEffect('✨');
+    updateUI();
+  }
+
+  function resumeTurnAfterItem() {
+    document.getElementById('itemAnnouncementScreen').style.display = 'none';
+    document.getElementById('actionScreen').style.display = 'block';
+    renderMyHand();
+  }
+
+  // アクション実行
   function takeAction(type) {
     const p = state.players[state.currentTurnIndex];
 
@@ -175,31 +352,34 @@
       const rain = Math.floor(Math.random() * 3) + 1;
       state.water += rain;
       log(`${p.name}: 水を汲んだ（+${rain} 💧）`);
+      triggerEffect('💧');
     } else if (type === 'food') {
       const caught = Math.floor(Math.random() * 3) + 1;
       state.food += caught;
       log(`${p.name}: 魚を釣った（+${caught} 🐟）`);
+      triggerEffect('🐟');
     } else if (type === 'raft') {
       state.raft += 1;
       log(`${p.name}: イカダを作った（+1 🪵）`);
+      triggerEffect('🪵');
     } else if (type === 'item') {
-      const item = itemsPool[Math.floor(Math.random() * itemsPool.length)];
-      p.items.push(item);
-      log(`${p.name}: 漂流物からアイテムを獲得！`);
+      const newItem = getRandomItem();
+      p.items.push(newItem);
+      log(`${p.name}: アイテムを捜索し「${newItem.name}」を入手！`);
+      triggerEffect('📦');
     }
 
-    // 次の生存者へターンを移行
-    nextTurn();
+    setTimeout(() => {
+      nextTurn();
+    }, 400);
   }
 
   function nextTurn() {
     let nextIndex = (state.currentTurnIndex + 1) % state.players.length;
 
-    // 1ラウンド（全員の行動）終了時の判定
     if (nextIndex === 0) {
       checkRoundEnd();
     } else {
-      // 生きてるプレイヤーまでスキップ
       while (!state.players[nextIndex].alive) {
         nextIndex = (nextIndex + 1) % state.players.length;
         if (nextIndex === 0) {
@@ -212,28 +392,107 @@
     }
   }
 
-  // 1日の終わり（全員行動後）の資材消費
+  // ラウンド終了と不足計算
   function checkRoundEnd() {
     const alivePlayers = state.players.filter(p => p.alive);
     const needed = alivePlayers.length;
 
-    log(`<b>--- 一日が終了（必要数: 💧${needed} / 🐟${needed}）---</b>`);
+    log(`<b>--- 1日が終了（必要数: 💧${needed} / 🐟${needed}）---</b>`);
     state.water -= needed;
     state.food -= needed;
 
+    // 不足があれば追放投票（時間無制限回し投票）を開始
     if (state.water < 0 || state.food < 0) {
-      log(`<span style="color:#e74c3c;">⚠️ 資材不足！最後に動いた ${state.players[state.currentTurnIndex].name} が責任をとって追放されました...</span>`);
-      state.players[state.currentTurnIndex].alive = false;
-      if (state.water < 0) state.water = 0;
-      if (state.food < 0) state.food = 0;
+      log(`<span style="color:#f87171;">⚠️ 資材不足！追放投票を行います。</span>`);
+      startVotingPhase();
+      return;
     }
 
     state.daysLeft -= 1;
-
     if (state.daysLeft <= 0) {
       endGame();
     } else {
-      // 次の日へ（生存している最初のプレイヤーから開始）
+      state.currentTurnIndex = state.players.findIndex(p => p.alive);
+      prepareTurn();
+    }
+  }
+
+  // 匿名投票フェーズの初期化
+  function startVotingPhase() {
+    document.getElementById('actionScreen').style.display = 'none';
+    document.getElementById('passScreen').style.display = 'none';
+    document.getElementById('votingScreen').style.display = 'block';
+
+    tempVotes = [];
+    currentVoteIndex = 0;
+    prepareNextVoter();
+  }
+
+  function prepareNextVoter() {
+    const alivePlayers = state.players.filter(p => p.alive);
+    
+    if (currentVoteIndex >= alivePlayers.length) {
+      tallyVotes();
+      return;
+    }
+
+    const voter = alivePlayers[currentVoteIndex];
+    document.getElementById('btnStartVote').style.display = 'block';
+    document.getElementById('voteChoiceForm').style.display = 'none';
+    document.getElementById('voterNameAnnounce').innerText = `🗳️ ${voter.name} の投票番`;
+  }
+
+  function openVoteForm() {
+    document.getElementById('btnStartVote').style.display = 'none';
+    document.getElementById('voteChoiceForm').style.display = 'block';
+
+    const voter = state.players.filter(p => p.alive)[currentVoteIndex];
+    const candidates = state.players.filter(p => p.alive && p.id !== voter.id);
+
+    const container = document.getElementById('voteCandidates');
+    container.innerHTML = '';
+
+    candidates.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'act-btn';
+      btn.style.background = '#dc2626';
+      btn.innerText = `👉 ${c.name} に投票`;
+      btn.onclick = () => castVote(c.id);
+      container.appendChild(btn);
+    });
+  }
+
+  function castVote(targetId) {
+    tempVotes.push(targetId);
+    currentVoteIndex++;
+    prepareNextVoter();
+  }
+
+  // 集計と追放処理
+  function tallyVotes() {
+    const counts = {};
+    tempVotes.forEach(id => counts[id] = (counts[id] || 0) + 1);
+
+    let maxVotes = -1;
+    let victimId = null;
+    for (const [id, count] of Object.entries(counts)) {
+      if (count > maxVotes) {
+        maxVotes = count;
+        victimId = id;
+      }
+    }
+
+    const victim = state.players.find(p => p.id == victimId);
+    victim.alive = false;
+    log(`<span style="color:#f87171;">💀 投票の結果、<b>${victim.name}</b> が追放されました...</span>`);
+
+    if (state.water < 0) state.water = 0;
+    if (state.food < 0) state.food = 0;
+
+    state.daysLeft -= 1;
+    if (state.daysLeft <= 0) {
+      endGame();
+    } else {
       state.currentTurnIndex = state.players.findIndex(p => p.alive);
       prepareTurn();
     }
@@ -243,20 +502,38 @@
     const alive = state.players.filter(p => p.alive);
     log(`<b>🌪️ ハリケーンが到着！ゲーム終了！</b>`);
     if (state.raft >= alive.length) {
-      log(`<span style="color:#2ecc71;">🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で脱出成功！</span>`);
+      log(`<span style="color:#4ade80;">🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で脱出成功！</span>`);
     } else {
-      log(`<span style="color:#e74c3c;">💀 イカダが足りず、全員失敗...</span>`);
+      log(`<span style="color:#f87171;">💀 イカダ不足のため、全員が嵐に飲み込まれた...</span>`);
     }
     document.getElementById('passScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'none';
+    document.getElementById('votingScreen').style.display = 'none';
   }
 
+  // 予測表示とUI更新
   function updateUI() {
     document.getElementById('water').innerText = Math.floor(state.water);
     document.getElementById('food').innerText = Math.floor(state.food);
     document.getElementById('raft').innerText = state.raft;
-    document.getElementById('days').innerText = state.daysLeft;
+    document.getElementById('days').innerText = `${state.daysLeft}日`;
 
+    // 予測ロジック
+    const aliveCount = state.players.filter(p => p.alive).length;
+    const waterDiff = state.water - aliveCount;
+    const foodDiff = state.food - aliveCount;
+
+    let predText = "";
+    if (waterDiff >= 0 && foodDiff >= 0) {
+      predText = `✅ 今夜の資源は十分です。（全員無事）<br>🪵 必要イカダ数: ${aliveCount}艘 (現在: ${state.raft}艘)`;
+    } else {
+      const shortWater = waterDiff < 0 ? Math.abs(waterDiff) : 0;
+      const shortFood = foodDiff < 0 ? Math.abs(foodDiff) : 0;
+      predText = `<span style="color:#fca5a5;">⚠️ 今夜【 水 ${shortWater} / 食料 ${shortFood} 】が不足します！<br>このままだと今夜<b>1名が追放投票</b>になります！</span>`;
+    }
+    document.getElementById('predictionText').innerHTML = predText;
+
+    // リスト描画
     const list = document.getElementById('playerList');
     list.innerHTML = '';
 
@@ -269,7 +546,7 @@
         <span>${isCurrent ? '👉 ' : ''}${p.name}</span>
         <div>
           <span class="badge">🎒 ${p.items.length}枚</span>
-          <span>${p.alive ? '生存' : '脱落'}</span>
+          <span>${p.alive ? '生存' : '追放'}</span>
         </div>
       `;
       list.appendChild(card);
