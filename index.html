@@ -1,134 +1,280 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>座席くじ引き</title>
-<style>
-:root{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;color:#1f2937;background:#f3f4f6}
-*{box-sizing:border-box}body{margin:0}.wrap{max-width:760px;margin:auto;padding:20px 14px 48px}
-h1{text-align:center;margin:8px 0 4px;font-size:28px}.lead{text-align:center;color:#6b7280;margin:0 0 20px}
-.card{background:#fff;border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 8px 24px rgba(0,0,0,.07)}
-h2{font-size:20px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field{display:flex;align-items:center;gap:8px}.num{width:28px;color:#6b7280;text-align:center}
-input{width:100%;border:1px solid #d1d5db;border-radius:12px;padding:12px 13px;font-size:16px;outline:none}
-input:focus{border-color:#111827;box-shadow:0 0 0 3px rgba(17,24,39,.08)}
-button{font:inherit;border:0;border-radius:13px;cursor:pointer}
-.primary{width:100%;padding:15px;background:#111827;color:#fff;font-weight:800;font-size:17px;margin-top:16px}
-.secondary{padding:12px 16px;background:#e5e7eb;font-weight:700}
-.error{color:#b91c1c;background:#fef2f2;padding:12px;border-radius:12px;margin-top:12px;display:none}
-.hidden{display:none!important}
-.turn{text-align:center;font-weight:800;font-size:18px;margin-bottom:14px}
-.name-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:18px}
-.name-btn{padding:13px;background:#eef0f3;font-weight:700}
-.name-btn.selected{background:#111827;color:white}.name-btn:disabled{opacity:.35;cursor:not-allowed}
-.lottery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-.lottery-btn{aspect-ratio:1;border-radius:16px;background:#e5e7eb;font-size:22px;font-weight:900}
-.lottery-btn:disabled{opacity:.35;cursor:not-allowed}
-.message{text-align:center;background:#f3f4f6;border-radius:14px;padding:14px;margin-top:14px;font-weight:800}
-.seats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.seat{min-height:82px;border:2px solid #e5e7eb;border-radius:15px;padding:10px;text-align:center}
-.seatno{font-size:12px;color:#6b7280}.person{font-weight:800;margin-top:7px;word-break:break-word}
-.results{list-style:none;padding:0;margin:0}.results li{display:flex;justify-content:space-between;padding:11px 3px;border-bottom:1px solid #eee}
-.note{font-size:13px;color:#6b7280;margin-top:8px}
-.actions{display:flex;gap:10px;margin-top:16px}.actions button{flex:1}
-@media(max-width:520px){.grid{grid-template-columns:1fr}.wrap{padding-top:12px}.card{padding:17px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サバイバル・イカダ脱出（回しプレイ版）</title>
+  <style>
+    * { box-sizing: border-box; font-family: sans-serif; }
+    body { background-color: #2c3e50; color: #ecf0f1; margin: 0; padding: 15px; text-align: center; }
+    .container { max-width: 500px; margin: 0 auto; background: #34495e; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    h1 { margin-top: 0; color: #f1c40f; font-size: 20px; }
+
+    /* 設定パネル */
+    .setup-panel { background: #1a252f; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+    .count-control { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 10px 0; }
+    .count-btn { background: #2980b9; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 20px; font-weight: bold; cursor: pointer; }
+    .start-btn { background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; }
+
+    /* ステータス・ログ */
+    .status-board { display: flex; justify-content: space-around; background: #1a252f; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
+    .status-board span { display: block; font-size: 18px; font-weight: bold; color: #3498db; }
+    .log-box { background: #1a252f; height: 120px; overflow-y: auto; text-align: left; padding: 8px; font-size: 12px; border-radius: 6px; margin-bottom: 10px; color: #bdc3c7; line-height: 1.4; }
+
+    /* ターン交代用オーバーレイ（手札隠し） */
+    .pass-screen { background: #1a252f; border: 2px solid #f39c12; padding: 20px; border-radius: 8px; margin-bottom: 15px; }
+    .pass-screen h2 { color: #f39c12; margin-top: 0; }
+
+    /* アクション・手札エリア */
+    .my-hand { background: #2980b9; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: left; font-size: 13px; }
+    .my-hand-title { font-weight: bold; color: #f1c40f; margin-bottom: 5px; }
+    .action-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+    .act-btn { background: #e67e22; border: none; color: white; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
+
+    /* プレイヤーリスト */
+    .player-list { display: flex; flex-direction: column; gap: 6px; text-align: left; max-height: 180px; overflow-y: auto; }
+    .player-card { background: #2c3e50; padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    .player-card.active { border: 2px solid #f1c40f; background: #34495e; }
+    .player-card.dead { opacity: 0.4; text-decoration: line-through; }
+    .badge { background: #e74c3c; color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px; }
+  </style>
 </head>
 <body>
-<div class="wrap">
-<h1>🚄 座席くじ引き</h1>
-<p class="lead">名前と座席番号を設定して、みんなでくじを引こう！</p>
 
-<section id="setup" class="card">
-<h2>参加者（8人）</h2>
-<div id="peopleInputs" class="grid"></div>
-<h2 style="margin-top:22px">座席番号（8席）</h2>
-<div id="seatInputs" class="grid"></div>
-<p class="note">※ 座席番号は自由に変更できます。名前・座席番号は重複できません。</p>
-<div id="error" class="error"></div>
-<button id="start" class="primary">くじ引きを開始する</button>
-</section>
+<div class="container">
+  <h1>🏝️ サバイバル・イカダ脱出</h1>
 
-<section id="lottery" class="card hidden">
-<div id="turn" class="turn"></div>
-<div id="nameGrid" class="name-grid"></div>
-<div class="lottery-grid" id="lotteryGrid"></div>
-<div id="drawMessage" class="message hidden"></div>
-<p class="note">① 自分の名前を選択 → ② 1〜8の好きな番号を押す</p>
-</section>
+  <!-- 設定パネル -->
+  <div id="setupPanel" class="setup-panel">
+    <h3>プレイヤー人数の選択</h3>
+    <div class="count-control">
+      <button class="count-btn" onclick="changeCount(-1)">ー</button>
+      <span id="playerCountDisplay" style="font-size:22px; font-weight:bold; color:#f1c40f;">4人</span>
+      <button class="count-btn" onclick="changeCount(1)">＋</button>
+    </div>
+    <button class="start-btn" onclick="startGame()">ゲーム開始！</button>
+  </div>
 
-<section id="final" class="card hidden">
-<h2>🎉 座席決定結果</h2>
-<h3>座席表</h3>
-<div id="seatMap" class="seats"></div>
-<h3>結果一覧</h3>
-<ul id="results" class="results"></ul>
-<div class="actions"><button id="again" class="secondary">もう一度引く</button></div>
-</section>
+  <!-- メインゲームエリア -->
+  <div id="gamePanel" style="display: none;">
+    
+    <div class="status-board">
+      <div>💧 水<span id="water">0</span></div>
+      <div>🐟 食料<span id="food">0</span></div>
+      <div>🪵 イカダ<span id="raft">0</span></div>
+      <div>📅 残り日数<span id="days">6</span></div>
+    </div>
+
+    <div id="log" class="log-box"></div>
+
+    <!-- 交代案内画面（手札保護） -->
+    <div id="passScreen" class="pass-screen">
+      <h2 id="turnAnnounce">プレイヤー1 のターン</h2>
+      <p style="font-size:13px; color:#ecf0f1;">スマホを渡してください。<br>準備ができたら下のボタンを押して手札を確認してください。</p>
+      <button class="start-btn" onclick="startTurn()">手札を確認してプレイ開始</button>
+    </div>
+
+    <!-- プレイ操作画面 -->
+    <div id="actionScreen" style="display: none;">
+      <!-- 自分の手札表示 -->
+      <div class="my-hand">
+        <div class="my-hand-title">🎒 あなた（<span id="currPlayerName"></span>）の所持アイテム:</div>
+        <div id="myItemsList">なし</div>
+      </div>
+
+      <!-- アクション選択 -->
+      <div class="action-group">
+        <button class="act-btn" onclick="takeAction('water')">💧 水を汲む</button>
+        <button class="act-btn" onclick="takeAction('food')">🐟 魚を釣る</button>
+        <button class="act-btn" onclick="takeAction('raft')">🪵 イカダを作る</button>
+        <button class="act-btn" onclick="takeAction('item')">📦 アイテム捜索</button>
+      </div>
+    </div>
+
+    <h3>参加者の状態（アイテム枚数）</h3>
+    <div id="playerList" class="player-list"></div>
+
+  </div>
 </div>
 
 <script>
-const DEFAULT_PEOPLE=["うめつ","かの","くろぎ","きんにく","れお","いとせ","はまいし","まなか"];
-const DEFAULT_SEATS=["1A","1B","2A","2B","2C","3A","3B","3C"];
-let people=[],seats=[],remainingLottery=[],remainingSeats=[],selectedPerson=null,assignments={},lotteryOwners={};
+  let playerCount = 4;
+  let gameActive = false;
 
-const $=id=>document.getElementById(id);
-function makeInputs(containerId,values,prefix){
-  $(containerId).innerHTML=values.map((v,i)=>`<label class="field"><span class="num">${i+1}</span><input id="${prefix}${i}" value="${escapeHtml(v)}" autocomplete="off"></label>`).join("");
-}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function readSetup(){
-  people=Array.from({length:8},(_,i)=>$(`p${i}`).value.trim());
-  seats=Array.from({length:8},(_,i)=>$(`s${i}`).value.trim());
-}
-function validate(){
-  readSetup();
-  if(people.some(x=>!x)||seats.some(x=>!x))return "名前と座席番号を8個すべて入力してください。";
-  if(new Set(people).size!==8)return "参加者名に重複があります。";
-  if(new Set(seats).size!==8)return "座席番号に重複があります。";
-  return "";
-}
-function startGame(){
-  const err=validate();$("error").style.display=err?"block":"none";$("error").textContent=err;if(err)return;
-  remainingLottery=shuffle([1,2,3,4,5,6,7,8]);
-  remainingSeats=shuffle([...seats]);
-  assignments={};lotteryOwners={};selectedPerson=null;
-  $("setup").classList.add("hidden");$("final").classList.add("hidden");$("lottery").classList.remove("hidden");
-  $("drawMessage").classList.add("hidden");renderNames();renderLottery();updateTurn();
-}
-function renderNames(){
-  $("nameGrid").innerHTML=people.map(p=>`<button class="name-btn ${selectedPerson===p?"selected":""}" ${assignments[p]?"disabled":""} data-person="${escapeHtml(p)}">${escapeHtml(p)}${assignments[p]?" ✓":""}</button>`).join("");
-  document.querySelectorAll(".name-btn").forEach(b=>b.onclick=()=>{if(!b.disabled){selectedPerson=b.dataset.person;renderNames();renderLottery();updateTurn()}});
-}
-function renderLottery(){
-  $("lotteryGrid").innerHTML=remainingLottery.map(n=>`<button class="lottery-btn" ${selectedPerson?"":"disabled"} data-num="${n}">${n}</button>`).join("");
-  document.querySelectorAll(".lottery-btn").forEach(b=>b.onclick=()=>draw(Number(b.dataset.num)));
-}
-function updateTurn(){
-  const done=Object.keys(assignments).length;
-  $("turn").textContent=selectedPerson?`${selectedPerson}さん、好きな番号を選んでください！`:`${done+1}人目：まず名前を選んでください`;
-}
-function draw(num){
-  if(!selectedPerson)return;
-  const seat=remainingSeats.pop(),person=selectedPerson;
-  assignments[person]=seat;lotteryOwners[num]=person;
-  remainingLottery=remainingLottery.filter(x=>x!==num);selectedPerson=null;
-  $("drawMessage").textContent=`🎫 ${person}さん → ${seat}席`;
-  $("drawMessage").classList.remove("hidden");
-  renderNames();renderLottery();
-  if(Object.keys(assignments).length===8){setTimeout(showFinal,650)}else updateTurn();
-}
-function showFinal(){
-  $("lottery").classList.add("hidden");$("final").classList.remove("hidden");
-  const bySeat={};Object.entries(assignments).forEach(([p,s])=>bySeat[s]=p);
-  $("seatMap").innerHTML=seats.map(s=>`<div class="seat"><div class="seatno">${escapeHtml(s)}席</div><div class="person">${escapeHtml(bySeat[s]||"—")}</div></div>`).join("");
-  $("results").innerHTML=people.map(p=>`<li><span>${escapeHtml(p)}</span><strong>${escapeHtml(assignments[p])}</strong></li>`).join("");
-}
-$("start").onclick=startGame;
-$("again").onclick=()=>{$("final").classList.add("hidden");$("setup").classList.remove("hidden");};
-makeInputs("peopleInputs",DEFAULT_PEOPLE,"p");makeInputs("seatInputs",DEFAULT_SEATS,"s");
+  const state = {
+    water: 0,
+    food: 0,
+    raft: 0,
+    daysLeft: 6,
+    currentTurnIndex: 0,
+    players: []
+  };
+
+  const itemsPool = ["水筒 (水+3)", "缶詰 (食料+3)", "木箱 (イカダ+1)", "釣り竿", "ナイフ"];
+
+  function changeCount(delta) {
+    playerCount = Math.min(10, Math.max(2, playerCount + delta));
+    document.getElementById('playerCountDisplay').innerText = `${playerCount}人`;
+  }
+
+  function startGame() {
+    gameActive = true;
+    state.water = playerCount * 2;
+    state.food = playerCount * 2;
+    state.raft = 0;
+    state.daysLeft = 6;
+    state.currentTurnIndex = 0;
+
+    state.players = [];
+    for (let i = 1; i <= playerCount; i++) {
+      state.players.push({
+        id: i - 1,
+        name: `プレイヤー ${i}`,
+        alive: true,
+        items: []
+      });
+    }
+
+    document.getElementById('setupPanel').style.display = 'none';
+    document.getElementById('gamePanel').style.display = 'block';
+
+    log(`<b>--- サバイバル開始（全${playerCount}人）---</b>`);
+    prepareTurn();
+  }
+
+  function log(msg) {
+    const box = document.getElementById('log');
+    box.innerHTML += msg + "<br>";
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // ターン準備（スマホを渡す画面を表示）
+  function prepareTurn() {
+    const p = state.players[state.currentTurnIndex];
+    document.getElementById('passScreen').style.display = 'block';
+    document.getElementById('actionScreen').style.display = 'none';
+    document.getElementById('turnAnnounce').innerText = `📱 ${p.name} のターン`;
+    updateUI();
+  }
+
+  // 「プレイ開始」を押したら自分の手札とアクションを表示
+  function startTurn() {
+    const p = state.players[state.currentTurnIndex];
+    document.getElementById('passScreen').style.display = 'none';
+    document.getElementById('actionScreen').style.display = 'block';
+    
+    document.getElementById('currPlayerName').innerText = p.name;
+    const itemList = document.getElementById('myItemsList');
+    itemList.innerText = p.items.length > 0 ? p.items.join(', ') : 'なし';
+  }
+
+  function takeAction(type) {
+    const p = state.players[state.currentTurnIndex];
+
+    if (type === 'water') {
+      const rain = Math.floor(Math.random() * 3) + 1;
+      state.water += rain;
+      log(`${p.name}: 水を汲んだ（+${rain} 💧）`);
+    } else if (type === 'food') {
+      const caught = Math.floor(Math.random() * 3) + 1;
+      state.food += caught;
+      log(`${p.name}: 魚を釣った（+${caught} 🐟）`);
+    } else if (type === 'raft') {
+      state.raft += 1;
+      log(`${p.name}: イカダを作った（+1 🪵）`);
+    } else if (type === 'item') {
+      const item = itemsPool[Math.floor(Math.random() * itemsPool.length)];
+      p.items.push(item);
+      log(`${p.name}: 漂流物からアイテムを獲得！`);
+    }
+
+    // 次の生存者へターンを移行
+    nextTurn();
+  }
+
+  function nextTurn() {
+    let nextIndex = (state.currentTurnIndex + 1) % state.players.length;
+
+    // 1ラウンド（全員の行動）終了時の判定
+    if (nextIndex === 0) {
+      checkRoundEnd();
+    } else {
+      // 生きてるプレイヤーまでスキップ
+      while (!state.players[nextIndex].alive) {
+        nextIndex = (nextIndex + 1) % state.players.length;
+        if (nextIndex === 0) {
+          checkRoundEnd();
+          break;
+        }
+      }
+      state.currentTurnIndex = nextIndex;
+      prepareTurn();
+    }
+  }
+
+  // 1日の終わり（全員行動後）の資材消費
+  function checkRoundEnd() {
+    const alivePlayers = state.players.filter(p => p.alive);
+    const needed = alivePlayers.length;
+
+    log(`<b>--- 一日が終了（必要数: 💧${needed} / 🐟${needed}）---</b>`);
+    state.water -= needed;
+    state.food -= needed;
+
+    if (state.water < 0 || state.food < 0) {
+      log(`<span style="color:#e74c3c;">⚠️ 資材不足！最後に動いた ${state.players[state.currentTurnIndex].name} が責任をとって追放されました...</span>`);
+      state.players[state.currentTurnIndex].alive = false;
+      if (state.water < 0) state.water = 0;
+      if (state.food < 0) state.food = 0;
+    }
+
+    state.daysLeft -= 1;
+
+    if (state.daysLeft <= 0) {
+      endGame();
+    } else {
+      // 次の日へ（生存している最初のプレイヤーから開始）
+      state.currentTurnIndex = state.players.findIndex(p => p.alive);
+      prepareTurn();
+    }
+  }
+
+  function endGame() {
+    const alive = state.players.filter(p => p.alive);
+    log(`<b>🌪️ ハリケーンが到着！ゲーム終了！</b>`);
+    if (state.raft >= alive.length) {
+      log(`<span style="color:#2ecc71;">🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で脱出成功！</span>`);
+    } else {
+      log(`<span style="color:#e74c3c;">💀 イカダが足りず、全員失敗...</span>`);
+    }
+    document.getElementById('passScreen').style.display = 'none';
+    document.getElementById('actionScreen').style.display = 'none';
+  }
+
+  function updateUI() {
+    document.getElementById('water').innerText = Math.floor(state.water);
+    document.getElementById('food').innerText = Math.floor(state.food);
+    document.getElementById('raft').innerText = state.raft;
+    document.getElementById('days').innerText = state.daysLeft;
+
+    const list = document.getElementById('playerList');
+    list.innerHTML = '';
+
+    state.players.forEach((p, idx) => {
+      const card = document.createElement('div');
+      const isCurrent = idx === state.currentTurnIndex;
+      card.className = `player-card ${isCurrent ? 'active' : ''} ${p.alive ? '' : 'dead'}`;
+      
+      card.innerHTML = `
+        <span>${isCurrent ? '👉 ' : ''}${p.name}</span>
+        <div>
+          <span class="badge">🎒 ${p.items.length}枚</span>
+          <span>${p.alive ? '生存' : '脱落'}</span>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+  }
 </script>
 </body>
 </html>
