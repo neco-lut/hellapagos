@@ -19,8 +19,9 @@
     .name-input-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
     .name-input-item input { background: #334155; border: 1px solid #475569; color: white; padding: 6px 10px; border-radius: 6px; flex: 1; }
 
-    .status-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #0f172a; padding: 10px; border-radius: 12px; margin-bottom: 8px; font-size: 12px; }
-    .status-item span { display: block; font-size: 18px; font-weight: bold; color: #38bdf8; margin-top: 2px; }
+    /* ダッシュボード（木材とイカダを表示） */
+    .status-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background: #0f172a; padding: 8px; border-radius: 12px; margin-bottom: 8px; font-size: 11px; }
+    .status-item span { display: block; font-size: 16px; font-weight: bold; color: #38bdf8; margin-top: 2px; }
     .prediction-box { background: #451a03; border: 1px solid #b45309; color: #fef3c7; padding: 8px 12px; border-radius: 10px; font-size: 11px; margin-bottom: 10px; text-align: left; line-height: 1.4; }
 
     .log-box { background: #020617; height: 90px; overflow-y: auto; text-align: left; padding: 8px; font-size: 11px; border-radius: 8px; margin-bottom: 10px; color: #94a3b8; line-height: 1.4; }
@@ -34,14 +35,13 @@
     .item-desc { color: #93c5fd; font-size: 10px; display: block; margin-top: 2px; }
     .use-btn { background: #2563eb; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
-    /* カプセル選択用ボタン */
     .action-capsule-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
     .capsule-btn { background: linear-gradient(135deg, #d97706, #b45309); border: none; color: white; padding: 12px 16px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
     .btn-main { background: #16a34a; color: white; border: none; padding: 12px; border-radius: 25px; font-size: 14px; font-weight: bold; width: 100%; cursor: pointer; }
 
-    /* 魚釣りカプセルグリッド */
-    .fish-capsule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-    .fish-capsule { background: linear-gradient(135deg, #0284c7, #0369a1); border: 2px solid #38bdf8; color: white; padding: 15px; border-radius: 16px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
+    .capsule-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px 0; }
+    .capsule-item { background: linear-gradient(135deg, #0284c7, #0369a1); border: 2px solid #38bdf8; color: white; padding: 12px 4px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .capsule-item.selected { border: 3px solid #f59e0b; background: #b45309; }
 
     .player-list { display: flex; flex-direction: column; gap: 6px; text-align: left; max-height: 130px; overflow-y: auto; }
     .player-card { background: #0f172a; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
@@ -94,7 +94,8 @@
     <div class="status-board">
       <div>💧 水<span id="water">0</span></div>
       <div>🐟 食料<span id="food">0</span></div>
-      <div>🪵 イカダ<span id="raft">0</span></div>
+      <div>🪵 木材<span id="wood">0</span></div>
+      <div>🚣‍♂️ イカダ<span id="raft">0</span></div>
       <div>📅 ターン<span id="days">1</span></div>
     </div>
 
@@ -112,7 +113,7 @@
       <button class="btn-main" onclick="startTurn()">天候を確認してターン開始</button>
     </div>
 
-    <!-- 天候発表演出モーダル -->
+    <!-- 天候発表画面 -->
     <div id="weatherScreen" class="overlay-screen" style="display:none;">
       <h2 id="weatherTitle">🌦️ 本日の天候</h2>
       <div id="weatherIconDisplay" style="font-size:60px; margin:10px 0;">🌤️</div>
@@ -120,16 +121,31 @@
       <button class="btn-main" onclick="proceedToActionScreen()">行動を選択する</button>
     </div>
 
-    <!-- 魚釣り用カプセル選択画面 -->
+    <!-- 魚釣り用画面（魚マーク5つ） -->
     <div id="fishScreen" class="overlay-screen" style="display:none;">
-      <h2>🎣 どのポイントで釣りをする？</h2>
-      <p style="font-size:12px; color:#cbd5e1;">カプセルを1つタップして選びましょう！</p>
-      <div class="fish-capsule-grid">
-        <button class="fish-capsule" onclick="selectFishCapsule()">💊 カプセル A</button>
-        <button class="fish-capsule" onclick="selectFishCapsule()">💊 カプセル B</button>
-        <button class="fish-capsule" onclick="selectFishCapsule()">💊 カプセル C</button>
-        <button class="fish-capsule" onclick="selectFishCapsule()">💊 カプセル D</button>
+      <h2>🐟 どの魚ポイントで釣りをする？</h2>
+      <p style="font-size:12px; color:#cbd5e1;">魚マークを1つ選んでタップ！（内訳: 3が1個、2が2個、1が2個）</p>
+      <div class="capsule-grid">
+        <button class="capsule-item" onclick="selectFishCapsule()">🐟 1</button>
+        <button class="capsule-item" onclick="selectFishCapsule()">🐟 2</button>
+        <button class="capsule-item" onclick="selectFishCapsule()">🐟 3</button>
+        <button class="capsule-item" onclick="selectFishCapsule()">🐟 4</button>
+        <button class="capsule-item" onclick="selectFishCapsule()">🐟 5</button>
       </div>
+    </div>
+
+    <!-- 木材集め選択画面（5つの選択肢） -->
+    <div id="raftScreen" class="overlay-screen" style="display:none;">
+      <h2>🪵 森で木材集め（セーフ4枚 / 蛇1枚）</h2>
+      <p style="font-size:12px; color:#cbd5e1;">好きなだけカードを選択して「オープン！」を押してください。<br>蛇が含まれていると<b>今回獲得できる木材が0＆次ターン行動・投票不能！</b></p>
+      <div class="capsule-grid">
+        <button id="raftBtn_0" class="capsule-item" onclick="toggleRaftSelect(0)">🪵 A</button>
+        <button id="raftBtn_1" class="capsule-item" onclick="toggleRaftSelect(1)">🪵 B</button>
+        <button id="raftBtn_2" class="capsule-item" onclick="toggleRaftSelect(2)">🪵 C</button>
+        <button id="raftBtn_3" class="capsule-item" onclick="toggleRaftSelect(3)">🪵 D</button>
+        <button id="raftBtn_4" class="capsule-item" onclick="toggleRaftSelect(4)">🪵 E</button>
+      </div>
+      <button class="btn-main" onclick="openSelectedRafts()">選択したカードをオープン！</button>
     </div>
 
     <!-- アイテム獲得内緒画面 -->
@@ -162,10 +178,10 @@
           <span>💧 水を汲む</span><span id="waterActionLabel" style="font-size:10px; opacity:0.8;">獲得量: ?</span>
         </button>
         <button class="capsule-btn" onclick="openFishScreen()">
-          <span>🐟 魚を釣る</span><span style="font-size:10px; opacity:0.8;">4つのカプセルから選ぶ</span>
+          <span>🐟 魚を釣る</span><span style="font-size:10px; opacity:0.8;">5つの魚マークから選ぶ</span>
         </button>
-        <button class="capsule-btn" onclick="takeAction('raft')">
-          <span>🪵 イカダを作る</span><span style="font-size:10px; opacity:0.8;">⚠️ 毒ヘビのリスクあり</span>
+        <button class="capsule-btn" onclick="openRaftScreen()">
+          <span>🪵 木材を集める</span><span style="font-size:10px; opacity:0.8;">5個でイカダ1艘完成</span>
         </button>
         <button class="capsule-btn" onclick="takeAction('item')">
           <span>📦 アイテム捜索</span><span style="font-size:10px; opacity:0.8;">カードを1枚秘密で引く</span>
@@ -194,9 +210,9 @@
 <div id="ruleModal" class="modal">
   <div class="modal-content">
     <h3 style="color:#fbbf24; margin-top:0;">📖 サバイバル・イカダ脱出のルール</h3>
-    <p><b>【目的】</b><br>嵐が来るまでに「全員が乗れるイカダ」を作り、水と食料を確保して無事に脱出すること！</p>
-    <p><b>【天候と嵐】</b><br>毎ターンの開始時に天候（雨量 0〜3）が決まり、「水汲み」で得られる水量が変化します。<br>6〜13ターンの間にランダムで<b>嵐 🌪️（ラストターン）</b>が発生します！</p>
-    <p><b>【魚釣り】</b><br>4つのカプセルから1つを選ぶことで、0〜3匹の魚を獲得できます。</p>
+    <p><b>【目的】</b><br>嵐が来るまでに全員が乗れるだけの「イカダ」を作り、水と食料を確保して無事に脱出すること！</p>
+    <p><b>【木材とイカダ】</b><br>木材 🪵 を 5 個集めるごとに、自動的に「イカダ 🚣‍♂️ 1艘」が組み立てられます！</p>
+    <p><b>【木材集め】</b><br>5枚（セーフ4枚/蛇1枚）から好きな数だけ選択して一気にオープン！蛇を引くと今回増える木材が0個＆次ターン行動・投票不能のペナルティ！</p>
     <button class="btn-main" onclick="toggleModal('ruleModal', false)">閉じる</button>
   </div>
 </div>
@@ -205,10 +221,13 @@
 <div id="itemModal" class="modal">
   <div class="modal-content">
     <h3 style="color:#fbbf24; margin-top:0;">📚 アイテムカード一覧</h3>
-    <p><b>【1. 資源系】</b><br>・🚰 高級水筒 (水 +3) / 🥫 缶詰セット (食料 +3) / 🪵 木の板 (イカダ +1)</p>
-    <p><b>【2. 道具系】</b><br>・🎣 魔法の釣竿 (食料 +2) / 浄水フィルター (水 +2) / 🪓 オノ (毒ヘビ無効化)</p>
-    <p><b>【3. 攻撃系】</b><br>・🔫 ピストル ＆ 💥 銃弾 (指定プレイヤーを暗殺)<br>・🪵 棍棒 (投票2票分) / 🐚 ほら貝 (1番手に移動)</p>
-    <p><b>【4. ハズレ】</b><br>・🔑 車のキー / 💰 札束 / 👙 水着 (効果なし)</p>
+    <p><b>【有用カード（全体の約6割）】</b><br>
+    ・🚰 高級水筒 (水 +3) / 🥫 缶詰セット (食料 +3) / 🪵 木の板 (木材 +3)<br>
+    ・🛡️ トタン (ピストルの暗殺攻撃を無効化！)<br>
+    ・🔫 ピストル ＆ 💥 銃弾 (暗殺を実行)<br>
+    ・🪵 棍棒 (投票2票分) / 🐚 ほら貝 (1番手に移動)</p>
+    <p><b>【ハズレカード（全体の約4割）】</b><br>
+    ・🔑 車のキー / 💰 札束 / 👙 水着 / 📄 古新聞 (一切効果なし！)</p>
     <button class="btn-main" onclick="toggleModal('itemModal', false)">閉じる</button>
   </div>
 </div>
@@ -217,10 +236,12 @@
   let playerCount = 4;
   let currentVoteIndex = 0;
   let tempVotes = [];
+  let selectedRaftIndices = [];
 
   const state = {
     water: 0,
     food: 0,
+    wood: 0,
     raft: 0,
     currentRound: 1,
     isStorm: false,
@@ -229,20 +250,22 @@
     players: []
   };
 
-  const itemMaster = [
+  const usefulItems = [
     { id: "water3", name: "🚰 高級水筒", desc: "水 +3 を獲得", category: "resource" },
     { id: "food3", name: "🥫 缶詰セット", desc: "食料 +3 を獲得", category: "resource" },
-    { id: "raft1", name: "🪵 木の板", desc: "イカダ +1 を完成", category: "resource" },
-    { id: "rod", name: "🎣 魔法の釣竿", desc: "食料 +2 を獲得", category: "tool" },
-    { id: "filter", name: "浄水フィルター", desc: "水 +2 を獲得", category: "tool" },
-    { id: "axe", name: "🪓 オノ", desc: "所持中、イカダ作りの毒ヘビを無効化", category: "tool" },
+    { id: "wood3", name: "🪵 木の板", desc: "木材 +3 を獲得", category: "resource" },
+    { id: "totan", name: "🛡️ トタン", desc: "所持中、ピストルの暗殺攻撃を自動で防御・無効化", category: "tool" },
     { id: "gun", name: "🔫 ピストル", desc: "「銃弾」と揃うと相手を暗殺可能", category: "attack" },
     { id: "bullet", name: "💥 銃弾", desc: "「ピストル」と揃うと相手を暗殺可能", category: "attack" },
     { id: "club", name: "🪵 棍棒", desc: "追放投票で自分の1票が2票分になる", category: "attack" },
-    { id: "shell", name: "🐚 ほら貝", desc: "使用すると次のラウンドの1番手になる", category: "attack" },
+    { id: "shell", name: "🐚 ほら貝", desc: "使用すると次のラウンドの1番手になる", category: "attack" }
+  ];
+
+  const junkItems = [
     { id: "junk_key", name: "🔑 車のキー", desc: "無人島では全く役に立たない...", category: "junk" },
     { id: "junk_money", name: "💰 札束", desc: "紙くず同然。何の役にも立たない...", category: "junk" },
-    { id: "junk_swim", name: "👙 水着", desc: "ただの水着。何の役にも立たない...", category: "junk" }
+    { id: "junk_swim", name: "👙 水着", desc: "ただの水着。何の役にも立たない...", category: "junk" },
+    { id: "junk_news", name: "📄 古新聞", desc: "読む場所がない。何の役にも立たない...", category: "junk" }
   ];
 
   function changeCount(delta) {
@@ -270,6 +293,7 @@
   function startGame() {
     state.water = playerCount * 2;
     state.food = playerCount * 2;
+    state.wood = 0;
     state.raft = 0;
     state.currentRound = 1;
     state.isStorm = false;
@@ -284,7 +308,8 @@
         id: i - 1,
         name: inputVal || `プレイヤー ${i}`,
         alive: true,
-        items: initialHand
+        items: initialHand,
+        isBittenBySnake: false
       });
     }
 
@@ -292,14 +317,16 @@
     document.getElementById('gamePanel').style.display = 'block';
 
     log(`<b>--- サバイバル開始（全員手札3枚）---</b>`);
-    
-    // ラウンド開始時の天候判定
     determineWeatherForRound();
     prepareTurn();
   }
 
   function getRandomItem() {
-    return { ...itemMaster[Math.floor(Math.random() * itemMaster.length)] };
+    if (Math.random() < 0.4) {
+      return { ...junkItems[Math.floor(Math.random() * junkItems.length)] };
+    } else {
+      return { ...usefulItems[Math.floor(Math.random() * usefulItems.length)] };
+    }
   }
 
   function log(msg) {
@@ -316,36 +343,48 @@
     setTimeout(() => layer.classList.remove('effect-active'), 1200);
   }
 
-  // 天候判定ロジック
+  // 木材が5個集まると自動的にイカダ1艘に変換
+  function checkWoodToRaft() {
+    while (state.wood >= 5) {
+      state.wood -= 5;
+      state.raft += 1;
+      log(`<span style="color:#f59e0b;"><b>🚣‍♂️ 木材が5個集まり、新しいイカダが1艘完成しました！ (合計: ${state.raft}艘)</b></span>`);
+    }
+  }
+
   function determineWeatherForRound() {
-    // 嵐の判定（6ターン目〜13ターン目の間にランダム発生）
     if (!state.isStorm) {
       if (state.currentRound >= 13) {
-        state.isStorm = true; // 13ターン目は強制的に嵐
+        state.isStorm = true;
       } else if (state.currentRound >= 6) {
-        // ターンが進むほど嵐になる確率が上がる
-        const stormChance = (state.currentRound - 5) * 0.2; // 6ターン目:20%, 7ターン目:40%...
-        if (Math.random() < stormChance) {
-          state.isStorm = true;
-        }
+        const stormChance = (state.currentRound - 5) * 0.2;
+        if (Math.random() < stormChance) state.isStorm = true;
       }
     }
 
     if (state.isStorm) {
-      state.currentWeatherRain = 2; // 嵐のターンの水量は2
+      state.currentWeatherRain = 2;
       log(`<span style="color:#f87171;"><b>🌪️ 嵐が到来した！！このターンがラストターンです！</b></span>`);
     } else {
-      // 0:晴れ(水0), 1:小雨(水1), 2:雨(水2), 3:大雨(水3)
       state.currentWeatherRain = Math.floor(Math.random() * 4);
     }
   }
 
   function prepareTurn() {
     const p = state.players[state.currentTurnIndex];
+
+    if (p.isBittenBySnake) {
+      log(`⚠️ <b>${p.name}</b> はヘビ毒の影響で今ターン行動不可（お休み）です。`);
+      p.isBittenBySnake = false;
+      setTimeout(nextTurn, 1000);
+      return;
+    }
+
     document.getElementById('passScreen').style.display = 'block';
     document.getElementById('weatherScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'none';
     document.getElementById('fishScreen').style.display = 'none';
+    document.getElementById('raftScreen').style.display = 'none';
     document.getElementById('drawSecretScreen').style.display = 'none';
     document.getElementById('itemAnnouncementScreen').style.display = 'none';
     document.getElementById('votingScreen').style.display = 'none';
@@ -354,7 +393,6 @@
     updateUI();
   }
 
-  // 手札確認を押したらまず天候演出を表示
   function startTurn() {
     document.getElementById('passScreen').style.display = 'none';
     document.getElementById('weatherScreen').style.display = 'block';
@@ -384,8 +422,6 @@
   function proceedToActionScreen() {
     document.getElementById('weatherScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'block';
-    
-    // 水汲みラベルの獲得量を動的に変更
     document.getElementById('waterActionLabel').innerText = `獲得量: ${state.currentWeatherRain} 💧`;
     renderMyHand();
   }
@@ -412,8 +448,8 @@
       
       if ((item.id === 'gun' || item.id === 'bullet') && !(hasGun && hasBullet)) {
         btnHtml = `<span style="font-size:9px; color:#fca5a5;">両方必要</span>`;
-      } else if (item.category === 'junk') {
-        btnHtml = `<span style="font-size:9px; color:#94a3b8;">効果なし</span>`;
+      } else if (item.category === 'junk' || item.id === 'totan') {
+        btnHtml = `<span style="font-size:9px; color:#94a3b8;">自動・効果なし</span>`;
       }
 
       card.innerHTML = `
@@ -434,11 +470,20 @@
     if (item.id === 'gun' || item.id === 'bullet') {
       const targetName = prompt("暗殺するプレイヤーの名前を入力してください:");
       const victim = state.players.find(pl => pl.alive && pl.name === targetName);
+      
       if (victim) {
-        victim.alive = false;
-        p.items = p.items.filter(i => i.id !== 'gun' && i.id !== 'bullet');
-        log(`<span style="color:#f87171;">🔫 <b>${p.name}</b> がピストルで <b>${victim.name}</b> を暗殺しました！</span>`);
-        showEffect('💥', `${victim.name} が暗殺された！`);
+        const totanIdx = victim.items.findIndex(i => i.id === 'totan');
+        if (totanIdx !== -1) {
+          victim.items.splice(totanIdx, 1);
+          p.items = p.items.filter(i => i.id !== 'gun' && i.id !== 'bullet');
+          log(`🛡️ <b>${victim.name}</b> は「トタン」でピストルの攻撃を防ぎ切った！`);
+          showEffect('🛡️', `${victim.name} がトタンで防御！`);
+        } else {
+          victim.alive = false;
+          p.items = p.items.filter(i => i.id !== 'gun' && i.id !== 'bullet');
+          log(`<span style="color:#f87171;">🔫 <b>${p.name}</b> がピストルで <b>${victim.name}</b> を暗殺しました！</span>`);
+          showEffect('💥', `${victim.name} が暗殺された！`);
+        }
       } else {
         alert("該当する生存者がいません");
         return;
@@ -447,9 +492,10 @@
       p.items.splice(itemIndex, 1);
       if (item.id === 'water3') state.water += 3;
       if (item.id === 'food3') state.food += 3;
-      if (item.id === 'raft1') state.raft += 1;
-      if (item.id === 'rod') state.food += 2;
-      if (item.id === 'filter') state.water += 2;
+      if (item.id === 'wood3') {
+        state.wood += 3;
+        checkWoodToRaft();
+      }
 
       log(`<b>【アイテム使用】</b> ${p.name} が「${item.name}」を使用！`);
       showEffect('✨', `${item.name} を使用！`);
@@ -468,7 +514,6 @@
     renderMyHand();
   }
 
-  // アクション実行
   function takeAction(type) {
     const p = state.players[state.currentTurnIndex];
 
@@ -477,20 +522,6 @@
       state.water += gainedWater;
       log(`${p.name}: 水を汲んだ！（+${gainedWater} 💧）`);
       showEffect('💧', `水 +${gainedWater} を獲得！`);
-      setTimeout(nextTurn, 1200);
-
-    } else if (type === 'raft') {
-      state.raft += 1;
-      const hasAxe = p.items.some(i => i.id === 'axe');
-      
-      if (Math.random() < 0.35 && !hasAxe) {
-        log(`🐍 <b>ハプニング！</b> ${p.name} は毒ヘビに噛まれた！治療のために水を1消費...`);
-        state.water = Math.max(0, state.water - 1);
-        showEffect('🐍', '毒ヘビに噛まれた！（水-1）');
-      } else {
-        log(`${p.name}: イカダを1艘組み立てた！（+1 🪵）`);
-        showEffect('🪵', 'イカダ完成！（+1）');
-      }
       setTimeout(nextTurn, 1200);
 
     } else if (type === 'item') {
@@ -509,23 +540,69 @@
     }
   }
 
-  // 魚釣り画面を開く
   function openFishScreen() {
     document.getElementById('actionScreen').style.display = 'none';
     document.getElementById('fishScreen').style.display = 'block';
   }
 
-  // 魚釣りカプセル選択（0〜3個がランダム決定）
   function selectFishCapsule() {
     const p = state.players[state.currentTurnIndex];
-    const caught = Math.floor(Math.random() * 4); // 0〜3個
-    state.food += caught;
+    const fishPool = [3, 2, 2, 1, 1];
+    const caught = fishPool[Math.floor(Math.random() * fishPool.length)];
     
-    log(`${p.name}: 釣りのカプセルを選択し、魚を ${caught} 匹釣り上げた！`);
+    state.food += caught;
+    log(`${p.name}: 魚を ${caught} 匹釣り上げた！`);
     document.getElementById('fishScreen').style.display = 'none';
     
     showEffect('🐟', `魚を ${caught} 匹ゲット！`);
     setTimeout(nextTurn, 1200);
+  }
+
+  function openRaftScreen() {
+    selectedRaftIndices = [];
+    for (let i = 0; i < 5; i++) {
+      const btn = document.getElementById(`raftBtn_${i}`);
+      btn.classList.remove('selected');
+    }
+    document.getElementById('actionScreen').style.display = 'none';
+    document.getElementById('raftScreen').style.display = 'block';
+  }
+
+  function toggleRaftSelect(index) {
+    const btn = document.getElementById(`raftBtn_${index}`);
+    if (selectedRaftIndices.includes(index)) {
+      selectedRaftIndices = selectedRaftIndices.filter(i => i !== index);
+      btn.classList.remove('selected');
+    } else {
+      selectedRaftIndices.push(index);
+      btn.classList.add('selected');
+    }
+  }
+
+  function openSelectedRafts() {
+    if (selectedRaftIndices.length === 0) {
+      alert("少なくとも1枚カードを選択してください！");
+      return;
+    }
+
+    const p = state.players[state.currentTurnIndex];
+    const count = selectedRaftIndices.length;
+    const snakeHits = Math.random() < (count / 5.0);
+
+    document.getElementById('raftScreen').style.display = 'none';
+
+    if (snakeHits) {
+      p.isBittenBySnake = true;
+      log(`🐍 <b>ハプニング！</b> ${p.name} が選んだカードの中にヘビが潜んでいた！今回増える木材は0個＆次ターンの行動・投票権を失った！`);
+      showEffect('🐍', 'ヘビ被害！木材0＆次ターン休み');
+    } else {
+      state.wood += count;
+      log(`${p.name}: 無事に木材を ${count} 個獲得した！`);
+      showEffect('🪵', `木材 +${count} 個獲得！`);
+      checkWoodToRaft(); // 木材5個以上でイカダ自動生成
+    }
+
+    setTimeout(nextTurn, 1400);
   }
 
   function finishTurnAfterDraw() {
@@ -572,7 +649,7 @@
       endGame();
     } else {
       state.currentRound += 1;
-      determineWeatherForRound(); // 次ターンの天候・嵐の判定
+      determineWeatherForRound();
       state.currentTurnIndex = state.players.findIndex(p => p.alive);
       prepareTurn();
     }
@@ -596,6 +673,14 @@
     }
 
     const voter = alivePlayers[currentVoteIndex];
+
+    if (voter.isBittenBySnake) {
+      log(`⚠️ <b>${voter.name}</b> はヘビ毒の影響で追放投票を棄権します。`);
+      currentVoteIndex++;
+      prepareNextVoter();
+      return;
+    }
+
     document.getElementById('btnStartVote').style.display = 'block';
     document.getElementById('voteChoiceForm').style.display = 'none';
     document.getElementById('voterNameAnnounce').innerText = `🗳️ ${voter.name} の投票番`;
@@ -670,6 +755,7 @@
   function updateUI() {
     document.getElementById('water').innerText = Math.floor(state.water);
     document.getElementById('food').innerText = Math.floor(state.food);
+    document.getElementById('wood').innerText = Math.floor(state.wood);
     document.getElementById('raft').innerText = state.raft;
     document.getElementById('days').innerText = `${state.currentRound}日目`;
 
@@ -679,7 +765,7 @@
 
     let predText = "";
     if (waterDiff >= 0 && foodDiff >= 0) {
-      predText = `✅ 今夜の資源は十分です。<br>🪵 必要イカダ: ${aliveCount.length}艘 (現在: ${state.raft}艘)`;
+      predText = `✅ 今夜の資源は十分です。<br>🚣‍♂️ 必要イカダ: ${aliveCount.length}艘 (現在: ${state.raft}艘 / 木材: ${state.wood}個)`;
     } else {
       const shortWater = waterDiff < 0 ? Math.abs(waterDiff) : 0;
       const shortFood = foodDiff < 0 ? Math.abs(foodDiff) : 0;
@@ -696,7 +782,7 @@
       card.className = `player-card ${isCurrent ? 'active' : ''} ${p.alive ? '' : 'dead'}`;
       
       card.innerHTML = `
-        <span>${isCurrent ? '👉 ' : ''}${p.name}</span>
+        <span>${isCurrent ? '👉 ' : ''}${p.name} ${p.isBittenBySnake ? '🐍' : ''}</span>
         <div>
           <span class="badge">🎒 ${p.items.length}枚</span>
           <span>${p.alive ? '生存' : '追放'}</span>
