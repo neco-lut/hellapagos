@@ -1,83 +1,67 @@
-# Generate updated index.html with "Squid Game" (Squid Craft/Raft Game) styling and theme.
-# Title: イカダゲーム
-# Styling inspired by Netflix Squid Game:
-# - Fonts: Google Fonts 'Gowun Batang' or custom styled geometric Korean/Squid Game style typography (Circle, Triangle, Square icons / geometric clean sans-serif + stylized title)
-# - Color palette: Deep dark/black background (#111111), Hot Pink/Magenta accents (#ff007f / #e91e63), Mint Teal/Turquoise (#03a9f4 / #00bfa5 / #00d2b5), Gold/Yellow (#f59e0b)
-# - Iconic Squid Game shapes: ○ △ □ incorporated into title & UI elements!
-
-html_code = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>イカダゲーム (Raft Game)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=M+PLUS+1p:wght@700;900&display=swap" rel="stylesheet">
+  <title>サバイバル・イカダ脱出 究極版</title>
   <style>
-    * { box-sizing: border-box; font-family: 'M PLUS 1p', -apple-system, sans-serif; }
-    body { background-color: #0b0b0e; color: #f8fafc; margin: 0; padding: 12px; text-align: center; transition: background-color 0.4s ease; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 12px; text-align: center; transition: background-color 0.4s ease; }
     
     /* 画面の状態によるテーマ（白＝全員OK, 暗色/個人カラー＝非公開） */
-    body.public-view { background-color: #f1f5f9 !important; color: #0f172a !important; }
-    body.public-view .container { background: #ffffff !important; border: 3px solid #00d2b5; color: #0f172a !important; box-shadow: 0 0 25px rgba(0,210,181,0.4); }
-    body.public-view .log-box { background: #e2e8f0 !important; color: #0f172a !important; border: 1px solid #cbd5e1; }
-    body.public-view .status-board { background: #f8fafc !important; color: #0f172a !important; border: 1px solid #cbd5e1; }
-    body.public-view .status-item span { color: #ff007f !important; }
+    body.public-view { background-color: #f8fafc !important; color: #0f172a !important; }
+    body.public-view .container { background: #ffffff !important; border: 3px solid #0284c7; color: #0f172a !important; box-shadow: 0 0 20px rgba(2,132,199,0.3); }
+    body.public-view .log-box { background: #f1f5f9 !important; color: #334155 !important; border: 1px solid #cbd5e1; }
+    body.public-view .status-board { background: #e2e8f0 !important; color: #0f172a !important; }
+    body.public-view .status-item span { color: #0284c7 !important; }
 
-    .container { max-width: 480px; margin: 0 auto; background: #121218; padding: 16px; border-radius: 20px; border: 2px solid #ff007f; box-shadow: 0 0 20px rgba(255,0,127,0.3); position: relative; overflow: hidden; transition: all 0.4s ease; }
-    
-    /* イカゲーム風タイポグラフィ */
-    .squid-title-box { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 12px; }
-    .squid-shapes { font-size: 14px; letter-spacing: 6px; color: #ff007f; margin-bottom: 2px; }
-    .squid-title { font-family: 'Black Han Sans', 'M PLUS 1p', sans-serif; font-size: 26px; font-weight: 900; color: #ffffff; text-shadow: 2px 2px 0px #ff007f, -2px -2px 0px #00d2b5; letter-spacing: 2px; margin: 0; }
+    .container { max-width: 480px; margin: 0 auto; background: #1e293b; padding: 16px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); position: relative; overflow: hidden; transition: all 0.4s ease; }
     
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .tab-group { display: flex; gap: 6px; }
-    .tab-btn { background: #1f1f2e; color: #00d2b5; border: 1px solid #00d2b5; padding: 5px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    .tab-btn:hover { background: #00d2b5; color: #121218; }
+    .header h1 { margin: 0; color: #fbbf24; font-size: 18px; }
+    .tab-group { display: flex; gap: 4px; }
+    .tab-btn { background: #334155; color: #f8fafc; border: 1px solid #475569; padding: 4px 8px; border-radius: 12px; font-size: 11px; cursor: pointer; }
     
-    .setup-panel { background: #181824; border: 1px solid #33334d; padding: 15px; border-radius: 14px; margin-bottom: 15px; text-align: left; }
+    .setup-panel { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
     .name-input-list { display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; margin: 10px 0; }
     .name-input-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-    .name-input-item input { background: #27273a; border: 1px solid #ff007f; color: white; padding: 6px 10px; border-radius: 6px; flex: 1; font-weight: bold; }
+    .name-input-item input { background: #334155; border: 1px solid #475569; color: white; padding: 6px 10px; border-radius: 6px; flex: 1; }
 
-    /* ダッシュボード（イカゲーム風ミント＆ピンク） */
-    .status-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background: #181824; border: 1px solid #33334d; padding: 8px; border-radius: 12px; margin-bottom: 8px; font-size: 11px; }
-    .status-item span { display: block; font-size: 16px; font-weight: 900; color: #00d2b5; margin-top: 2px; }
-    .prediction-box { background: #2a081a; border: 1px solid #ff007f; color: #fce7f3; padding: 8px 12px; border-radius: 10px; font-size: 11px; margin-bottom: 10px; text-align: left; line-height: 1.4; }
+    .status-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; background: #0f172a; padding: 8px; border-radius: 12px; margin-bottom: 8px; font-size: 11px; }
+    .status-item span { display: block; font-size: 16px; font-weight: bold; color: #38bdf8; margin-top: 2px; }
+    .prediction-box { background: #451a03; border: 1px solid #b45309; color: #fef3c7; padding: 8px 12px; border-radius: 10px; font-size: 11px; margin-bottom: 10px; text-align: left; line-height: 1.4; }
 
-    .log-box { background: #08080c; border: 1px solid #222233; height: 90px; overflow-y: auto; text-align: left; padding: 8px; font-size: 11px; border-radius: 8px; margin-bottom: 10px; color: #a1a1aa; line-height: 1.4; }
+    .log-box { background: #020617; height: 90px; overflow-y: auto; text-align: left; padding: 8px; font-size: 11px; border-radius: 8px; margin-bottom: 10px; color: #94a3b8; line-height: 1.4; }
 
-    .overlay-screen { background: #181824; border: 2px solid #ff007f; padding: 18px; border-radius: 14px; margin-bottom: 15px; box-shadow: 0 0 15px rgba(255,0,127,0.2); }
-    .overlay-screen h2 { color: #ff007f; margin-top: 0; font-size: 17px; font-weight: 900; letter-spacing: 1px; }
+    .overlay-screen { background: #0f172a; border: 2px solid #f59e0b; padding: 18px; border-radius: 14px; margin-bottom: 15px; }
+    .overlay-screen h2 { color: #f59e0b; margin-top: 0; font-size: 16px; }
 
-    .my-hand { background: #0d2826; border: 1px solid #00d2b5; padding: 12px; border-radius: 12px; margin-bottom: 10px; text-align: left; }
-    .hand-title { font-weight: bold; color: #00d2b5; font-size: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; }
-    .item-card { background: #181824; border: 1px solid #ff007f; padding: 8px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
-    .item-desc { color: #94a3b8; font-size: 10px; display: block; margin-top: 2px; }
-    .use-btn { background: #ff007f; color: white; border: none; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+    .my-hand { background: #1e3a8a; padding: 12px; border-radius: 12px; margin-bottom: 10px; text-align: left; }
+    .hand-title { font-weight: bold; color: #fbbf24; font-size: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .item-card { background: #0f172a; border: 1px solid #3b82f6; padding: 8px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+    .item-desc { color: #93c5fd; font-size: 10px; display: block; margin-top: 2px; }
+    .use-btn { background: #2563eb; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
     .action-capsule-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-    .capsule-btn { background: linear-gradient(135deg, #ff007f, #c20062); border: none; color: white; padding: 12px 16px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(255,0,127,0.3); }
-    .btn-main { background: #00d2b5; color: #121218; border: none; padding: 12px; border-radius: 25px; font-size: 15px; font-weight: 900; width: 100%; cursor: pointer; box-shadow: 0 4px 12px rgba(0,210,181,0.3); }
+    .capsule-btn { background: linear-gradient(135deg, #d97706, #b45309); border: none; color: white; padding: 12px 16px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    .btn-main { background: #16a34a; color: white; border: none; padding: 12px; border-radius: 25px; font-size: 14px; font-weight: bold; width: 100%; cursor: pointer; }
 
     .capsule-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px 0; }
-    .capsule-item { background: linear-gradient(135deg, #00d2b5, #009982); border: 2px solid #00d2b5; color: #121218; padding: 12px 4px; border-radius: 12px; font-size: 12px; font-weight: 900; cursor: pointer; }
-    .capsule-item.selected { border: 3px solid #ff007f; background: #ff007f; color: white; }
+    .capsule-item { background: linear-gradient(135deg, #0284c7, #0369a1); border: 2px solid #38bdf8; color: white; padding: 12px 4px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .capsule-item.selected { border: 3px solid #f59e0b; background: #b45309; }
 
     .player-list { display: flex; flex-direction: column; gap: 6px; text-align: left; max-height: 130px; overflow-y: auto; }
-    .player-card { background: #181824; border: 1px solid #33334d; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: white; }
-    .player-card.active { border: 2px solid #00d2b5; }
-    .player-card.dead { opacity: 0.25; text-decoration: line-through; }
-    .badge { background: #ff007f; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+    .player-card { background: #0f172a; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: white; }
+    .player-card.active { border: 2px solid #fbbf24; }
+    .player-card.dead { opacity: 0.3; text-decoration: line-through; }
+    .badge { background: #dc2626; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; }
 
-    .effect-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 60px; opacity: 0; transition: all 0.4s ease-out; z-index: 100; background: rgba(18,18,24,0.9); }
+    .effect-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 60px; opacity: 0; transition: all 0.4s ease-out; z-index: 100; background: rgba(15,23,42,0.85); }
     .effect-active { opacity: 1; transform: scale(1.1); }
-    .effect-text { font-size: 18px; font-weight: 900; color: #ff007f; margin-top: 10px; text-shadow: 0 0 10px rgba(255,0,127,0.5); }
+    .effect-text { font-size: 18px; font-weight: bold; color: #fbbf24; margin-top: 10px; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; padding: 15px; box-sizing: border-box; }
-    .modal-content { background: #181824; border: 2px solid #ff007f; padding: 16px; border-radius: 14px; max-height: 85vh; overflow-y: auto; text-align: left; font-size: 12px; line-height: 1.5; color: white; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; padding: 15px; box-sizing: border-box; }
+    .modal-content { background: #1e293b; border: 1px solid #475569; padding: 16px; border-radius: 14px; max-height: 85vh; overflow-y: auto; text-align: left; font-size: 12px; line-height: 1.5; color: white; }
   </style>
 </head>
 <body>
@@ -89,29 +73,26 @@ html_code = """<!DOCTYPE html>
   </div>
 
   <div class="header">
-    <div class="squid-title-box">
-      <div class="squid-shapes">○ △ □</div>
-      <h1 class="squid-title">イカダゲーム</h1>
-    </div>
+    <h1>🏝️ イカダ脱出</h1>
     <div class="tab-group">
       <button class="tab-btn" onclick="toggleModal('ruleModal', true)">📖 ルール</button>
-      <button class="tab-btn" onclick="toggleModal('itemModal', true)">📚 カード</button>
+      <button class="tab-btn" onclick="toggleModal('itemModal', true)">📚 アイテム一覧</button>
     </div>
   </div>
 
   <!-- 設定画面 -->
   <div id="setupPanel" class="setup-panel">
-    <h3 style="margin-top:0; color:#ff007f;">1. 参加人数</h3>
+    <h3 style="margin-top:0; color:#fbbf24;">1. 参加人数</h3>
     <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
-      <button onclick="changeCount(-1)" style="width:32px; height:32px; border-radius:50%; border:none; background:#ff007f; color:white; font-weight:bold; font-size:16px;">ー</button>
-      <span id="playerCountDisplay" style="font-size:20px; font-weight:900; color:#00d2b5;">4人</span>
-      <button onclick="changeCount(1)" style="width:32px; height:32px; border-radius:50%; border:none; background:#ff007f; color:white; font-weight:bold; font-size:16px;">＋</button>
+      <button onclick="changeCount(-1)" style="width:30px; height:30px; border-radius:50%; border:none; background:#334155; color:white;">ー</button>
+      <span id="playerCountDisplay" style="font-size:18px; font-weight:bold; color:#fbbf24;">4人</span>
+      <button onclick="changeCount(1)" style="width:30px; height:30px; border-radius:50%; border:none; background:#334155; color:white;">＋</button>
     </div>
 
-    <h3 style="color:#ff007f;">2. プレイヤー名</h3>
+    <h3 style="color:#fbbf24;">2. プレイヤー名</h3>
     <div id="nameInputList" class="name-input-list"></div>
 
-    <button class="btn-main" onclick="startGame()" style="margin-top:10px;">ゲームを開始する ○△□</button>
+    <button class="btn-main" onclick="startGame()" style="margin-top:10px;">サバイバルを開始！</button>
   </div>
 
   <!-- メイン画面 -->
@@ -126,7 +107,7 @@ html_code = """<!DOCTYPE html>
     </div>
 
     <div class="prediction-box">
-      <span style="font-weight:900; color:#ff007f;">📊 今夜の生存予測</span>
+      <span style="font-weight:bold; color:#fbbf24;">📊 今夜の状況予測</span>
       <div id="predictionText">集計中...</div>
     </div>
 
@@ -135,7 +116,7 @@ html_code = """<!DOCTYPE html>
     <!-- 交代確認 -->
     <div id="passScreen" class="overlay-screen">
       <h2 id="turnAnnounce">〇〇のターン</h2>
-      <p style="font-size:12px; color:#a1a1aa;">スマホを対象者に渡してください。<br>画面を見られないように準備ができたら押してください。</p>
+      <p style="font-size:12px; color:#cbd5e1;">スマホを対象者に渡してください。<br>画面を見られないように準備ができたら押してください。</p>
       <button class="btn-main" onclick="startTurn()">天候を確認してターン開始</button>
     </div>
 
@@ -150,7 +131,7 @@ html_code = """<!DOCTYPE html>
     <!-- 魚釣り画面 -->
     <div id="fishScreen" class="overlay-screen" style="display:none;">
       <h2>🐟 どの魚ポイントで釣りをする？</h2>
-      <p style="font-size:12px; color:#a1a1aa;">魚マークを1つ選択！（内訳: 3が1個、2が2個、1が2個）</p>
+      <p style="font-size:12px; color:#cbd5e1;">魚マークを1つ選択！（内訳: 3が1個、2が2個、1が2個）</p>
       <div class="capsule-grid">
         <button class="capsule-item" onclick="selectFishCapsule()">🐟 1</button>
         <button class="capsule-item" onclick="selectFishCapsule()">🐟 2</button>
@@ -163,7 +144,7 @@ html_code = """<!DOCTYPE html>
     <!-- 木材集め画面 -->
     <div id="raftScreen" class="overlay-screen" style="display:none;">
       <h2>🪵 森で木材集め（セーフ4枚 / 蛇1枚）</h2>
-      <p id="mapNoticeText" style="font-size:11px; color:#00d2b5;"></p>
+      <p id="mapNoticeText" style="font-size:11px; color:#38bdf8;"></p>
       <div class="capsule-grid">
         <button id="raftBtn_0" class="capsule-item" onclick="toggleRaftSelect(0)">🪵 A</button>
         <button id="raftBtn_1" class="capsule-item" onclick="toggleRaftSelect(1)">🪵 B</button>
@@ -177,8 +158,8 @@ html_code = """<!DOCTYPE html>
     <!-- アイテム獲得秘密画面 -->
     <div id="drawSecretScreen" class="overlay-screen" style="display:none;">
       <h2>📦 アイテム獲得！（秘密）</h2>
-      <p style="font-size:12px; color:#a1a1aa;">あなたしか見えません。引いたカード:</p>
-      <div id="drawnItemCard" class="item-card" style="background:#0d2826; border-color:#00d2b5; margin:15px 0; padding:12px;"></div>
+      <p style="font-size:12px; color:#cbd5e1;">あなたしか見えません。引いたカード:</p>
+      <div id="drawnItemCard" class="item-card" style="background:#1e3a8a; margin:15px 0; padding:12px;"></div>
       <button class="btn-main" onclick="finishTurnAfterDraw()">確認してターン終了</button>
     </div>
 
@@ -194,7 +175,7 @@ html_code = """<!DOCTYPE html>
       <div class="my-hand">
         <div class="hand-title">
           <span>🎒 手札 (<span id="currPlayerName"></span>)</span>
-          <span style="font-size:10px; color:#00d2b5;">※個人カラー画面（非公開）</span>
+          <span style="font-size:10px; color:#93c5fd;">※個人カラー画面（非公開）</span>
         </div>
         <div id="myItemsList"></div>
       </div>
@@ -217,17 +198,17 @@ html_code = """<!DOCTYPE html>
 
     <!-- 回し投票画面 -->
     <div id="votingScreen" class="overlay-screen" style="display:none;">
-      <h2 id="voterNameAnnounce">🗳️ 脱落者の投票</h2>
-      <p style="font-size:11px; color:#ff007f;">スマホを回して匿名で追放したい相手に投票してください。</p>
+      <h2 id="voterNameAnnounce">🗳️ 追放投票</h2>
+      <p style="font-size:11px; color:#fca5a5;">スマホを回して匿名で追放したい相手に投票してください。</p>
       <button id="btnStartVote" class="btn-main" onclick="openVoteForm()">投票画面を開く</button>
       
       <div id="voteChoiceForm" style="display:none; margin-top:12px;">
-        <p style="font-size:11px;">脱落させるプレイヤーを選択:</p>
+        <p style="font-size:11px;">追放するプレイヤーを選択:</p>
         <div id="voteCandidates" style="display:flex; flex-direction:column; gap:6px;"></div>
       </div>
     </div>
 
-    <h3>プレイヤー状態一覧</h3>
+    <h3>生存者の状態（手札枚数）</h3>
     <div id="playerList" class="player-list"></div>
   </div>
 </div>
@@ -235,7 +216,7 @@ html_code = """<!DOCTYPE html>
 <!-- ルール説明モーダル -->
 <div id="ruleModal" class="modal">
   <div class="modal-content">
-    <h3 style="color:#ff007f; margin-top:0;">📖 イカダゲームのルール</h3>
+    <h3 style="color:#fbbf24; margin-top:0;">📖 サバイバル・イカダ脱出のルール</h3>
     <p><b>【画面色の識別ルール】</b><br>
     ・<b>白色背景:</b> 全員で画面を見てOKです！<br>
     ・<b>自分のカラー背景:</b> あなた専用の秘密画面です。他人に手札を見られないように注意してください！</p>
@@ -247,17 +228,18 @@ html_code = """<!DOCTYPE html>
 <!-- アイテム一覧モーダル -->
 <div id="itemModal" class="modal">
   <div class="modal-content">
-    <h3 style="color:#ff007f; margin-top:0;">📚 全カード一覧</h3>
-    <p><b>【有用カード（約6割）】</b><br>
+    <h3 style="color:#fbbf24; margin-top:0;">📚 全アイテムカード一覧</h3>
+    <p><b>【資源・防具系】</b><br>
     ・高級水筒 (水+3) / 缶詰 (食料+3) / 木の板 (木材+3)<br>
     ・🛡️ トタン (ピストル暗殺を自動無効化)<br>
-    ・⛺ 防水シート (晴れでも水+1) / 🩺 救急箱 (ヘビ被害無効)<br>
+    ・⛺ 防水シート (晴れでも水+1) / 🩺 救急箱 (ヘビ被害無効)</p>
+    <p><b>【攻撃・妨害・能力系】</b><br>
     ・🔫 ピストル ＆ 💥 銃弾 (暗殺実行)<br>
     ・🧤 泥棒の手袋 (相手からランダム奪取)<br>
     ・🧪 毒薬 (夜に全員に内緒で水か食料を-2)<br>
     ・✉️ 脅迫状 (投票順が1番手に固定)<br>
     ・🔭 望遠鏡 (嵐のターン予知) / 🗺️ 秘密の地図 (ヘビ位置透視)<br>
-    ・🚀 発煙筒 (脱落決定を1回無効化)<br>
+    ・🚀 発煙筒 (追放決定を1回無効化)<br>
     ・💣 時限爆弾 (木材-3破壊) / 🍲 人肉スープ (死亡時食料+4)</p>
     <p><b>【ハズレ（約4割）】</b><br>🔑 車のキー / 💰 札束 / 👙 水着 / 📄 古新聞 (無効)</p>
     <button class="btn-main" onclick="toggleModal('itemModal', false)">閉じる</button>
@@ -269,17 +251,17 @@ html_code = """<!DOCTYPE html>
   let currentVoteIndex = 0;
   let tempVotes = [];
   let selectedRaftIndices = [];
-  let activePoisonType = null;
+  let activePoisonType = null; // 毒薬の夜セット用
 
-  // イカゲーム風のビビッドかつダークなカラーパレット
+  // プレイヤーカラーの定義
   const colorPalette = [
-    { name: "ピンク", bg: "#2d0016", cardBg: "#800040" },
-    { name: "ミント", bg: "#002b25", cardBg: "#006657" },
-    { name: "パープル", bg: "#1f0033", cardBg: "#4d0080" },
-    { name: "ディープブルー", bg: "#001833", cardBg: "#003b80" },
-    { name: "アンバー", bg: "#331a00", cardBg: "#804000" },
-    { name: "マゼンタ", bg: "#330026", cardBg: "#800060" },
-    { name: "シアン", bg: "#002833", cardBg: "#006680" }
+    { name: "レッド", bg: "#451a03", cardBg: "#991b1b" },
+    { name: "ブルー", bg: "#0f172a", cardBg: "#1e3a8a" },
+    { name: "グリーン", bg: "#064e3b", cardBg: "#065f46" },
+    { name: "パープル", bg: "#3b0764", cardBg: "#581c87" },
+    { name: "オレンジ", bg: "#7c2d12", cardBg: "#9a3412" },
+    { name: "ピンク", bg: "#831843", cardBg: "#9d174d" },
+    { name: "シアン", bg: "#164e63", cardBg: "#155e75" }
   ];
 
   const state = {
@@ -342,6 +324,7 @@ html_code = """<!DOCTYPE html>
     document.getElementById(modalId).style.display = show ? 'block' : 'none';
   }
 
+  // 画面の「全員公開(白)」と「個人カラー(非公開)」の切り替え
   function setScreenTheme(isPublic, player = null) {
     if (isPublic) {
       document.body.className = "public-view";
@@ -351,7 +334,7 @@ html_code = """<!DOCTYPE html>
       if (player && player.color) {
         document.querySelector('.container').style.background = player.color.bg;
       } else {
-        document.querySelector('.container').style.background = "#121218";
+        document.querySelector('.container').style.background = "#0f172a";
       }
     }
   }
@@ -384,7 +367,7 @@ html_code = """<!DOCTYPE html>
     document.getElementById('setupPanel').style.display = 'none';
     document.getElementById('gamePanel').style.display = 'block';
 
-    log(`<b>--- イカダゲーム開始 ○△□ ---</b>`);
+    log(`<b>--- サバイバル開始（全員手札3枚配付）---</b>`);
     determineWeatherForRound();
     prepareTurn();
   }
@@ -415,7 +398,7 @@ html_code = """<!DOCTYPE html>
     while (state.wood >= 5) {
       state.wood -= 5;
       state.raft += 1;
-      log(`<span style="color:#00d2b5;"><b>🚣‍♂️ 木材が5個集まり、新しいイカダが1艘完成しました！ (合計: ${state.raft}艘)</b></span>`);
+      log(`<span style="color:#f59e0b;"><b>🚣‍♂️ 木材が5個集まり、新しいイカダが1艘完成しました！ (合計: ${state.raft}艘)</b></span>`);
     }
   }
 
@@ -431,7 +414,7 @@ html_code = """<!DOCTYPE html>
 
     if (state.isStorm) {
       state.currentWeatherRain = 2;
-      log(`<span style="color:#ff007f;"><b>🌪️ 嵐が到来した！！このターンがラストターンです！</b></span>`);
+      log(`<span style="color:#f87171;"><b>🌪️ 嵐が到来した！！このターンがラストターンです！</b></span>`);
     } else {
       state.currentWeatherRain = Math.floor(Math.random() * 4);
     }
@@ -441,6 +424,7 @@ html_code = """<!DOCTYPE html>
     const p = state.players[state.currentTurnIndex];
 
     if (p.isBittenBySnake) {
+      // 救急箱の自動判定
       const medIdx = p.items.findIndex(i => i.id === 'medkit');
       if (medIdx !== -1) {
         p.items.splice(medIdx, 1);
@@ -454,6 +438,7 @@ html_code = """<!DOCTYPE html>
       }
     }
 
+    // パス画面は個人カラー設定
     setScreenTheme(false, p);
 
     document.getElementById('passScreen').style.display = 'block';
@@ -471,6 +456,7 @@ html_code = """<!DOCTYPE html>
 
   function startTurn() {
     const p = state.players[state.currentTurnIndex];
+    // 天候画面は「全員公開（白）」画面！
     setScreenTheme(true);
 
     document.getElementById('passScreen').style.display = 'none';
@@ -500,11 +486,13 @@ html_code = """<!DOCTYPE html>
 
   function proceedToActionScreen() {
     const p = state.players[state.currentTurnIndex];
+    // アクション・手札画面は再び「個人カラー（非公開）」背景
     setScreenTheme(false, p);
 
     document.getElementById('weatherScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'block';
     
+    // 防水シートの判定
     const hasTarp = p.items.some(i => i.id === 'tarp');
     let displayWater = state.currentWeatherRain;
     if (state.currentWeatherRain === 0 && hasTarp) displayWater = 1;
@@ -555,7 +543,7 @@ html_code = """<!DOCTYPE html>
     const item = p.items[itemIndex];
 
     if (item.id === 'gun' || item.id === 'bullet') {
-      const targetName = prompt("脱落させるプレイヤーの名前を入力してください:");
+      const targetName = prompt("暗殺するプレイヤーの名前を入力してください:");
       const victim = state.players.find(pl => pl.alive && pl.name === targetName);
       
       if (victim) {
@@ -568,15 +556,15 @@ html_code = """<!DOCTYPE html>
         } else {
           victim.alive = false;
           p.items = p.items.filter(i => i.id !== 'gun' && i.id !== 'bullet');
-          log(`<span style="color:#ff007f;">🔫 <b>${p.name}</b> がピストルで <b>${victim.name}</b> を脱落させました！</span>`);
-          showEffect('💥', `${victim.name} が脱落！`);
+          log(`<span style="color:#f87171;">🔫 <b>${p.name}</b> がピストルで <b>${victim.name}</b> を暗殺しました！</span>`);
+          showEffect('💥', `${victim.name} が暗殺された！`);
           triggerSoup();
         }
       } else {
         alert("該当する生存者がいません");
         return;
       }
-    } else if (item.id === 'glove') {
+    } else if (item.id === 'glove') { // 泥棒の手袋
       const targetName = prompt("アイテムを奪う相手の名前を入力してください:");
       const victim = state.players.find(pl => pl.alive && pl.name === targetName && pl.id !== p.id);
       if (victim && victim.items.length > 0) {
@@ -595,7 +583,7 @@ html_code = """<!DOCTYPE html>
         alert("該当する生存者、または奪える手札が存在しません");
         return;
       }
-    } else if (item.id === 'poison') {
+    } else if (item.id === 'poison') { // 毒薬
       const choice = prompt("今夜減少させる資源を選んでください (1: 水 -2,  2: 食料 -2)");
       if (choice === "1") activePoisonType = "water";
       else if (choice === "2") activePoisonType = "food";
@@ -604,15 +592,15 @@ html_code = """<!DOCTYPE html>
       p.items.splice(itemIndex, 1);
       log(`🧪 誰かが密かに「毒薬」をセットした...（効果は夜に発動）`);
       showEffect('🧪', '毒薬がセットされた...');
-    } else if (item.id === 'scope') {
+    } else if (item.id === 'scope') { // 望遠鏡
       p.items.splice(itemIndex, 1);
       alert(`🔭 【望遠鏡の予知】\n・明日の天候雨量: ${Math.floor(Math.random() * 4)} 💧\n・嵐の発生: 6〜13ターン目に到来`);
-    } else if (item.id === 'map') {
+    } else if (item.id === 'map') { // 秘密の地図
       p.items.splice(itemIndex, 1);
       const snakeLoc = Math.floor(Math.random() * 5);
       const locNames = ["A", "B", "C", "D", "E"];
       alert(`🗺️ 【秘密の地図】\nヘビはカード 『${locNames[snakeLoc]}』 に潜んでいます！`);
-    } else if (item.id === 'bomb') {
+    } else if (item.id === 'bomb') { // 時限爆弾
       p.items.splice(itemIndex, 1);
       state.wood = Math.max(0, state.wood - 3);
       log(`💣 <b>${p.name}</b> が「時限爆弾」を使用！木材が -3 個破壊された！`);
@@ -678,6 +666,9 @@ html_code = """<!DOCTYPE html>
     const p = state.players[state.currentTurnIndex];
     let fishPool = [3, 2, 2, 1, 1];
     let caught = fishPool[Math.floor(Math.random() * fishPool.length)];
+    
+    // 生け簀のパッシブ効果（+1）
+    if (p.items.some(i => i.id === 'fish_farm')) caught += 1;
 
     state.food += caught;
     log(`${p.name}: 魚を ${caught} 匹釣り上げた！`);
@@ -772,13 +763,14 @@ html_code = """<!DOCTYPE html>
 
     log(`<b>--- ${state.currentRound}ターン目が終了（必要数: 💧${needed} / 🐟${needed}）---</b>`);
     
+    // 毒薬の夜発動
     if (activePoisonType === "water") {
       state.water = Math.max(0, state.water - 2);
-      log(`<span style="color:#ff007f;">🧪 <b>犯人不明の毒薬により、水が -2 減少した！</b></span>`);
+      log(`<span style="color:#f87171;">🧪 <b>犯人不明の毒薬により、水が -2 減少した！</b></span>`);
       activePoisonType = null;
     } else if (activePoisonType === "food") {
       state.food = Math.max(0, state.food - 2);
-      log(`<span style="color:#ff007f;">🧪 <b>犯人不明の毒薬により、食料が -2 減少した！</b></span>`);
+      log(`<span style="color:#f87171;">🧪 <b>犯人不明の毒薬により、食料が -2 減少した！</b></span>`);
       activePoisonType = null;
     }
 
@@ -786,7 +778,7 @@ html_code = """<!DOCTYPE html>
     state.food -= needed;
 
     if (state.water < 0 || state.food < 0) {
-      log(`<span style="color:#ff007f;">⚠️ 資材不足！脱落者の決定（投票）を行います。</span>`);
+      log(`<span style="color:#f87171;">⚠️ 資材不足！追放投票を行います。</span>`);
       startVotingPhase();
       return;
     }
@@ -813,6 +805,7 @@ html_code = """<!DOCTYPE html>
     tempVotes = [];
     currentVoteIndex = 0;
 
+    // 脅迫状を持っているプレイヤーを1番手にソート/配置
     const alivePlayers = state.players.filter(p => p.alive);
     const blackmailVoterIdx = alivePlayers.findIndex(p => p.items.some(i => i.id === 'blackmail'));
     if (blackmailVoterIdx !== -1 && blackmailVoterIdx !== 0) {
@@ -839,6 +832,7 @@ html_code = """<!DOCTYPE html>
       return;
     }
 
+    // 投票画面も個人カラー背景
     setScreenTheme(false, voter);
 
     document.getElementById('btnStartVote').style.display = 'block';
@@ -860,7 +854,7 @@ html_code = """<!DOCTYPE html>
     candidates.forEach(c => {
       const btn = document.createElement('button');
       btn.className = 'capsule-btn';
-      btn.style.background = '#ff007f';
+      btn.style.background = '#dc2626';
       btn.innerText = `👉 ${c.name} に投票`;
       btn.onclick = () => castVote(c.id, 1);
       container.appendChild(btn);
@@ -876,6 +870,7 @@ html_code = """<!DOCTYPE html>
   }
 
   function tallyVotes() {
+    // 投票結果・集計画面は「全員公開（白）」画面！
     setScreenTheme(true);
 
     const counts = {};
@@ -892,14 +887,15 @@ html_code = """<!DOCTYPE html>
 
     const victim = state.players.find(p => p.id == victimId);
 
+    // 発煙筒の自動無効化判定
     const flareIdx = victim.items.findIndex(i => i.id === 'flare');
     if (flareIdx !== -1) {
       victim.items.splice(flareIdx, 1);
-      log(`🚀 <b>${victim.name}</b> が「発煙筒」を発射！今回の脱落投票結果が無効化されました！`);
-      showEffect('🚀', `${victim.name} が発煙筒で生き残った！`);
+      log(`🚀 <b>${victim.name}</b> が「発煙筒」を発射！今回の追放投票結果が無効化されました！`);
+      showEffect('🚀', `${victim.name} が発煙筒で九死に一生！`);
     } else {
       victim.alive = false;
-      log(`<span style="color:#ff007f;">💀 投票の結果、<b>${victim.name}</b> が脱落しました...</span>`);
+      log(`<span style="color:#f87171;">💀 投票の結果、<b>${victim.name}</b> が追放されました...</span>`);
       triggerSoup();
     }
 
@@ -914,9 +910,9 @@ html_code = """<!DOCTYPE html>
     const alive = state.players.filter(p => p.alive);
     log(`<b>🌪️ 嵐（最終ターン）が終了！脱出判定を行います！</b>`);
     if (state.raft >= alive.length) {
-      log(`<span style="color:#00d2b5; font-size:16px;"><b>🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で無事に脱出成功！勝者！</b></span>`);
+      log(`<span style="color:#16a34a; font-size:16px;"><b>🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で無事に脱出成功！勝者！</b></span>`);
     } else {
-      log(`<span style="color:#ff007f; font-size:16px;"><b>💀 イカダ不足のため全員が嵐に飲み込まれた... GAME OVER</b></span>`);
+      log(`<span style="color:#f87171; font-size:16px;"><b>💀 イカダ不足のため全員が嵐に飲み込まれた... GAME OVER</b></span>`);
     }
     document.getElementById('passScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'none';
@@ -940,7 +936,7 @@ html_code = """<!DOCTYPE html>
     } else {
       const shortWater = waterDiff < 0 ? Math.abs(waterDiff) : 0;
       const shortFood = foodDiff < 0 ? Math.abs(foodDiff) : 0;
-      predText = `<span style="color:#fca5a5;">⚠️ 今夜【 水 ${shortWater} / 食料 ${shortFood} 】不足！<br>このままだと今夜<b>1名脱落投票</b>が発生します！</span>`;
+      predText = `<span style="color:#fca5a5;">⚠️ 今夜【 水 ${shortWater} / 食料 ${shortFood} 】不足！<br>このままだと今夜<b>1名追放投票</b>が発生します！</span>`;
     }
     document.getElementById('predictionText').innerHTML = predText;
 
@@ -957,7 +953,7 @@ html_code = """<!DOCTYPE html>
         <span>${isCurrent ? '👉 ' : ''}${p.name} ${p.isBittenBySnake ? '🐍' : ''}</span>
         <div>
           <span class="badge">🎒 ${p.items.length}枚</span>
-          <span>${p.alive ? '生存' : '脱落'}</span>
+          <span>${p.alive ? '生存' : '追放'}</span>
         </div>
       `;
       list.appendChild(card);
@@ -966,9 +962,3 @@ html_code = """<!DOCTYPE html>
 </script>
 </body>
 </html>
-"""
-
-with open("index.html", "w", encoding="utf-8") as f:
-    f.write(html_code)
-
-print("Updated index.html successfully!")
