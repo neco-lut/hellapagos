@@ -9,55 +9,50 @@
     body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 12px; text-align: center; }
     .container { max-width: 480px; margin: 0 auto; background: #1e293b; padding: 16px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.6); position: relative; overflow: hidden; }
     
-    /* ヘッダー＆タブ */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .header h1 { margin: 0; color: #fbbf24; font-size: 18px; }
     .tab-group { display: flex; gap: 4px; }
     .tab-btn { background: #334155; color: #f8fafc; border: 1px solid #475569; padding: 4px 8px; border-radius: 12px; font-size: 11px; cursor: pointer; }
     
-    /* 設定パネル */
     .setup-panel { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; }
     .name-input-list { display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; margin: 10px 0; }
     .name-input-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
     .name-input-item input { background: #334155; border: 1px solid #475569; color: white; padding: 6px 10px; border-radius: 6px; flex: 1; }
 
-    /* ステータス＆予測 */
     .status-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; background: #0f172a; padding: 10px; border-radius: 12px; margin-bottom: 8px; font-size: 12px; }
     .status-item span { display: block; font-size: 18px; font-weight: bold; color: #38bdf8; margin-top: 2px; }
     .prediction-box { background: #451a03; border: 1px solid #b45309; color: #fef3c7; padding: 8px 12px; border-radius: 10px; font-size: 11px; margin-bottom: 10px; text-align: left; line-height: 1.4; }
 
     .log-box { background: #020617; height: 90px; overflow-y: auto; text-align: left; padding: 8px; font-size: 11px; border-radius: 8px; margin-bottom: 10px; color: #94a3b8; line-height: 1.4; }
 
-    /* 画面切り替え（オーバーレイ） */
     .overlay-screen { background: #0f172a; border: 2px solid #f59e0b; padding: 18px; border-radius: 14px; margin-bottom: 15px; }
     .overlay-screen h2 { color: #f59e0b; margin-top: 0; font-size: 16px; }
 
-    /* 手札・アイテム */
     .my-hand { background: #1e3a8a; padding: 12px; border-radius: 12px; margin-bottom: 10px; text-align: left; }
     .hand-title { font-weight: bold; color: #fbbf24; font-size: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; }
     .item-card { background: #0f172a; border: 1px solid #3b82f6; padding: 8px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
     .item-desc { color: #93c5fd; font-size: 10px; display: block; margin-top: 2px; }
     .use-btn { background: #2563eb; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
-    /* カプセル型アクションボタン */
+    /* カプセル選択用ボタン */
     .action-capsule-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-    .capsule-btn { background: linear-gradient(135deg, #d97706, #b45309); border: none; color: white; padding: 12px 16px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.1s; }
-    .capsule-btn:active { transform: scale(0.98); }
+    .capsule-btn { background: linear-gradient(135deg, #d97706, #b45309); border: none; color: white; padding: 12px 16px; border-radius: 30px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
     .btn-main { background: #16a34a; color: white; border: none; padding: 12px; border-radius: 25px; font-size: 14px; font-weight: bold; width: 100%; cursor: pointer; }
 
-    /* プレイヤーリスト */
+    /* 魚釣りカプセルグリッド */
+    .fish-capsule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
+    .fish-capsule { background: linear-gradient(135deg, #0284c7, #0369a1); border: 2px solid #38bdf8; color: white; padding: 15px; border-radius: 16px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
+
     .player-list { display: flex; flex-direction: column; gap: 6px; text-align: left; max-height: 130px; overflow-y: auto; }
     .player-card { background: #0f172a; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
     .player-card.active { border: 2px solid #fbbf24; }
     .player-card.dead { opacity: 0.3; text-decoration: line-through; }
     .badge { background: #dc2626; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; }
 
-    /* 演出レイヤー */
     .effect-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 60px; opacity: 0; transition: all 0.4s ease-out; z-index: 100; background: rgba(15,23,42,0.85); }
     .effect-active { opacity: 1; transform: scale(1.1); }
     .effect-text { font-size: 18px; font-weight: bold; color: #fbbf24; margin-top: 10px; }
 
-    /* モーダル */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; padding: 15px; box-sizing: border-box; }
     .modal-content { background: #1e293b; border: 1px solid #475569; padding: 16px; border-radius: 14px; max-height: 85vh; overflow-y: auto; text-align: left; font-size: 12px; line-height: 1.5; }
   </style>
@@ -67,7 +62,7 @@
 <div class="container">
   <div id="effectLayer" class="effect-overlay">
     <div id="effectIcon">💧</div>
-    <div id="effectText" class="effect-text">ハプニング発生！</div>
+    <div id="effectText" class="effect-text">演出</div>
   </div>
 
   <div class="header">
@@ -100,7 +95,7 @@
       <div>💧 水<span id="water">0</span></div>
       <div>🐟 食料<span id="food">0</span></div>
       <div>🪵 イカダ<span id="raft">0</span></div>
-      <div>📅 残り<span id="days">6日</span></div>
+      <div>📅 ターン<span id="days">1</span></div>
     </div>
 
     <div class="prediction-box">
@@ -114,10 +109,30 @@
     <div id="passScreen" class="overlay-screen">
       <h2 id="turnAnnounce">〇〇のターン</h2>
       <p style="font-size:12px; color:#cbd5e1;">スマホを対象者に渡してください。<br>画面を見られないように準備ができたら押してください。</p>
-      <button class="btn-main" onclick="startTurn()">手札を確認してターン開始</button>
+      <button class="btn-main" onclick="startTurn()">天候を確認してターン開始</button>
     </div>
 
-    <!-- アイテム獲得内緒表示画面 -->
+    <!-- 天候発表演出モーダル -->
+    <div id="weatherScreen" class="overlay-screen" style="display:none;">
+      <h2 id="weatherTitle">🌦️ 本日の天候</h2>
+      <div id="weatherIconDisplay" style="font-size:60px; margin:10px 0;">🌤️</div>
+      <p id="weatherDescText" style="font-size:14px; color:#fbbf24; font-weight:bold;"></p>
+      <button class="btn-main" onclick="proceedToActionScreen()">行動を選択する</button>
+    </div>
+
+    <!-- 魚釣り用カプセル選択画面 -->
+    <div id="fishScreen" class="overlay-screen" style="display:none;">
+      <h2>🎣 どのポイントで釣りをする？</h2>
+      <p style="font-size:12px; color:#cbd5e1;">カプセルを1つタップして選びましょう！</p>
+      <div class="fish-capsule-grid">
+        <button class="fish-capsule" onclick="selectFishCapsule()">💊 カプセル A</button>
+        <button class="fish-capsule" onclick="selectFishCapsule()">💊 カプセル B</button>
+        <button class="fish-capsule" onclick="selectFishCapsule()">💊 カプセル C</button>
+        <button class="fish-capsule" onclick="selectFishCapsule()">💊 カプセル D</button>
+      </div>
+    </div>
+
+    <!-- アイテム獲得内緒画面 -->
     <div id="drawSecretScreen" class="overlay-screen" style="display:none;">
       <h2>📦 アイテム獲得！（秘密）</h2>
       <p style="font-size:12px; color:#cbd5e1;">他のみんなには内緒です！あなたが引いたカード:</p>
@@ -132,7 +147,7 @@
       <button class="btn-main" onclick="resumeTurnAfterItem()">自分の手札に戻る</button>
     </div>
 
-    <!-- アクション画面 -->
+    <!-- アクション選択画面 -->
     <div id="actionScreen" style="display:none;">
       <div class="my-hand">
         <div class="hand-title">
@@ -142,13 +157,12 @@
         <div id="myItemsList"></div>
       </div>
 
-      <!-- カプセル型選択肢 -->
       <div class="action-capsule-group">
         <button class="capsule-btn" onclick="takeAction('water')">
-          <span>💧 水を汲む</span><span style="font-size:10px; opacity:0.8;">天候で変動 (0〜3)</span>
+          <span>💧 水を汲む</span><span id="waterActionLabel" style="font-size:10px; opacity:0.8;">獲得量: ?</span>
         </button>
-        <button class="capsule-btn" onclick="takeAction('food')">
-          <span>🐟 魚を釣る</span><span style="font-size:10px; opacity:0.8;">獲得量ランダム (1〜3)</span>
+        <button class="capsule-btn" onclick="openFishScreen()">
+          <span>🐟 魚を釣る</span><span style="font-size:10px; opacity:0.8;">4つのカプセルから選ぶ</span>
         </button>
         <button class="capsule-btn" onclick="takeAction('raft')">
           <span>🪵 イカダを作る</span><span style="font-size:10px; opacity:0.8;">⚠️ 毒ヘビのリスクあり</span>
@@ -180,13 +194,9 @@
 <div id="ruleModal" class="modal">
   <div class="modal-content">
     <h3 style="color:#fbbf24; margin-top:0;">📖 サバイバル・イカダ脱出のルール</h3>
-    <p><b>【目的】</b><br>6日目の終わりまでに「全員が乗れるイカダ」を作り、水と食料を確保して無事に脱出すること！</p>
-    <p><b>【毎ターンの行動】</b><br>自分の番になったらカプセルボタンから1つ行動を選択します。<br>
-    ・💧 水汲み（雨量に応じて獲得・晴れだと0滴の危険も！）<br>
-    ・🐟 魚釣り（1〜3個獲得）<br>
-    ・🪵 イカダ作り（1艘完成・確率で毒ヘビに遭遇！）<br>
-    ・📦 アイテム捜索（便利カードをみんなに秘密で獲得）</p>
-    <p><b>【暗殺と特殊カード】</b><br>「ピストル」と「銃弾」を揃えると、投票を無視して好きなプレイヤーを撃ち殺すことができます！</p>
+    <p><b>【目的】</b><br>嵐が来るまでに「全員が乗れるイカダ」を作り、水と食料を確保して無事に脱出すること！</p>
+    <p><b>【天候と嵐】</b><br>毎ターンの開始時に天候（雨量 0〜3）が決まり、「水汲み」で得られる水量が変化します。<br>6〜13ターンの間にランダムで<b>嵐 🌪️（ラストターン）</b>が発生します！</p>
+    <p><b>【魚釣り】</b><br>4つのカプセルから1つを選ぶことで、0〜3匹の魚を獲得できます。</p>
     <button class="btn-main" onclick="toggleModal('ruleModal', false)">閉じる</button>
   </div>
 </div>
@@ -195,20 +205,10 @@
 <div id="itemModal" class="modal">
   <div class="modal-content">
     <h3 style="color:#fbbf24; margin-top:0;">📚 アイテムカード一覧</h3>
-    <p><b>【1. 資源系】</b><br>
-    ・🚰 高級水筒 (水 +3)<br>
-    ・🥫 缶詰セット (食料 +3)<br>
-    ・🪵 木の板 (イカダ +1)</p>
-    <p><b>【2. 道具系】</b><br>
-    ・🎣 魔法の釣竿 (食料 +2)<br>
-    ・浄水フィルター (水 +2)<br>
-    ・🪓 オノ (イカダ作りの毒ヘビ被害を自動回避)</p>
-    <p><b>【3. 攻撃・権力系】</b><br>
-    ・🔫 ピストル ＆ 💥 銃弾 (両方揃うと指定プレイヤーを暗殺)<br>
-    ・🪵 棍棒 (追放投票の自身の票が2票分になる)<br>
-    ・🐚 ほら貝 (ターン順をリセットし自分が最初になる)</p>
-    <p><b>【4. ハズレ（ゴミ）系】</b><br>
-    ・🔑 車のキー / 💰 札束 / 👙 水着 (無人島では何の効果もなし！)</p>
+    <p><b>【1. 資源系】</b><br>・🚰 高級水筒 (水 +3) / 🥫 缶詰セット (食料 +3) / 🪵 木の板 (イカダ +1)</p>
+    <p><b>【2. 道具系】</b><br>・🎣 魔法の釣竿 (食料 +2) / 浄水フィルター (水 +2) / 🪓 オノ (毒ヘビ無効化)</p>
+    <p><b>【3. 攻撃系】</b><br>・🔫 ピストル ＆ 💥 銃弾 (指定プレイヤーを暗殺)<br>・🪵 棍棒 (投票2票分) / 🐚 ほら貝 (1番手に移動)</p>
+    <p><b>【4. ハズレ】</b><br>・🔑 車のキー / 💰 札束 / 👙 水着 (効果なし)</p>
     <button class="btn-main" onclick="toggleModal('itemModal', false)">閉じる</button>
   </div>
 </div>
@@ -222,12 +222,13 @@
     water: 0,
     food: 0,
     raft: 0,
-    daysLeft: 6,
+    currentRound: 1,
+    isStorm: false,
+    currentWeatherRain: 0,
     currentTurnIndex: 0,
     players: []
   };
 
-  // 全アイテムリスト
   const itemMaster = [
     { id: "water3", name: "🚰 高級水筒", desc: "水 +3 を獲得", category: "resource" },
     { id: "food3", name: "🥫 缶詰セット", desc: "食料 +3 を獲得", category: "resource" },
@@ -270,7 +271,8 @@
     state.water = playerCount * 2;
     state.food = playerCount * 2;
     state.raft = 0;
-    state.daysLeft = 6;
+    state.currentRound = 1;
+    state.isStorm = false;
     state.currentTurnIndex = 0;
 
     state.players = [];
@@ -290,6 +292,9 @@
     document.getElementById('gamePanel').style.display = 'block';
 
     log(`<b>--- サバイバル開始（全員手札3枚）---</b>`);
+    
+    // ラウンド開始時の天候判定
+    determineWeatherForRound();
     prepareTurn();
   }
 
@@ -311,20 +316,77 @@
     setTimeout(() => layer.classList.remove('effect-active'), 1200);
   }
 
+  // 天候判定ロジック
+  function determineWeatherForRound() {
+    // 嵐の判定（6ターン目〜13ターン目の間にランダム発生）
+    if (!state.isStorm) {
+      if (state.currentRound >= 13) {
+        state.isStorm = true; // 13ターン目は強制的に嵐
+      } else if (state.currentRound >= 6) {
+        // ターンが進むほど嵐になる確率が上がる
+        const stormChance = (state.currentRound - 5) * 0.2; // 6ターン目:20%, 7ターン目:40%...
+        if (Math.random() < stormChance) {
+          state.isStorm = true;
+        }
+      }
+    }
+
+    if (state.isStorm) {
+      state.currentWeatherRain = 2; // 嵐のターンの水量は2
+      log(`<span style="color:#f87171;"><b>🌪️ 嵐が到来した！！このターンがラストターンです！</b></span>`);
+    } else {
+      // 0:晴れ(水0), 1:小雨(水1), 2:雨(水2), 3:大雨(水3)
+      state.currentWeatherRain = Math.floor(Math.random() * 4);
+    }
+  }
+
   function prepareTurn() {
     const p = state.players[state.currentTurnIndex];
     document.getElementById('passScreen').style.display = 'block';
+    document.getElementById('weatherScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'none';
+    document.getElementById('fishScreen').style.display = 'none';
     document.getElementById('drawSecretScreen').style.display = 'none';
     document.getElementById('itemAnnouncementScreen').style.display = 'none';
     document.getElementById('votingScreen').style.display = 'none';
-    document.getElementById('turnAnnounce').innerText = `📱 ${p.name} のターン`;
+    
+    document.getElementById('turnAnnounce').innerText = `📱 ${p.name} のターン (${state.currentRound}ターン目)`;
     updateUI();
   }
 
+  // 手札確認を押したらまず天候演出を表示
   function startTurn() {
     document.getElementById('passScreen').style.display = 'none';
+    document.getElementById('weatherScreen').style.display = 'block';
+
+    const iconBox = document.getElementById('weatherIconDisplay');
+    const descText = document.getElementById('weatherDescText');
+    const titleText = document.getElementById('weatherTitle');
+
+    if (state.isStorm) {
+      titleText.innerText = "🌪️ 嵐（最終ターン）！";
+      iconBox.innerText = "🌪️";
+      descText.innerText = "猛烈な嵐が上陸！今夜イカダで脱出します！ (水汲み獲得量: 2)";
+    } else {
+      titleText.innerText = `🌦️ 本日の天候 (${state.currentRound}ターン目)`;
+      const wList = [
+        { icon: "☀️", name: "晴れ", text: "水汲みで得られる水: 0 💧" },
+        { icon: "🌤️", name: "小雨", text: "水汲みで得られる水: 1 💧" },
+        { icon: "🌧️", name: "雨", text: "水汲みで得られる水: 2 💧" },
+        { icon: "🌧️", name: "大雨", text: "水汲みで得られる水: 3 💧" }
+      ];
+      const currW = wList[state.currentWeatherRain];
+      iconBox.innerText = currW.icon;
+      descText.innerText = `${currW.name}！ ${currW.text}`;
+    }
+  }
+
+  function proceedToActionScreen() {
+    document.getElementById('weatherScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'block';
+    
+    // 水汲みラベルの獲得量を動的に変更
+    document.getElementById('waterActionLabel').innerText = `獲得量: ${state.currentWeatherRain} 💧`;
     renderMyHand();
   }
 
@@ -369,7 +431,6 @@
     const p = state.players[state.currentTurnIndex];
     const item = p.items[itemIndex];
 
-    // 暗殺処理
     if (item.id === 'gun' || item.id === 'bullet') {
       const targetName = prompt("暗殺するプレイヤーの名前を入力してください:");
       const victim = state.players.find(pl => pl.alive && pl.name === targetName);
@@ -389,7 +450,6 @@
       if (item.id === 'raft1') state.raft += 1;
       if (item.id === 'rod') state.food += 2;
       if (item.id === 'filter') state.water += 2;
-      if (item.id === 'shell') log(`🐚 ${p.name} がほら貝を吹き鳴らした！`);
 
       log(`<b>【アイテム使用】</b> ${p.name} が「${item.name}」を使用！`);
       showEffect('✨', `${item.name} を使用！`);
@@ -408,42 +468,23 @@
     renderMyHand();
   }
 
-  // アクション（ハプニング付き）
+  // アクション実行
   function takeAction(type) {
     const p = state.players[state.currentTurnIndex];
 
     if (type === 'water') {
-      const rand = Math.random();
-      let rain = 0;
-      if (rand < 0.2) {
-        rain = 0;
-        log(`☀️ 天気がカンカン照りだ！水は1滴も汲めなかった...`);
-        showEffect('☀️', 'カラカラの晴れ！（水+0）');
-      } else if (rand < 0.7) {
-        rain = 2;
-        log(`${p.name}: 恵みの雨で水を確保！（+2 💧）`);
-        showEffect('💧', '恵みの雨！（水+2）');
-      } else {
-        rain = 3;
-        log(`${p.name}: 大雨が降ってきた！（+3 💧）`);
-        showEffect('🌧️', '大雨！（水+3）');
-      }
-      state.water += rain;
-      setTimeout(nextTurn, 1200);
-
-    } else if (type === 'food') {
-      const caught = Math.floor(Math.random() * 3) + 1;
-      state.food += caught;
-      log(`${p.name}: 魚釣りに成功！（+${caught} 🐟）`);
-      showEffect('🐟', `魚をゲット！（食料+${caught}）`);
+      const gainedWater = state.currentWeatherRain;
+      state.water += gainedWater;
+      log(`${p.name}: 水を汲んだ！（+${gainedWater} 💧）`);
+      showEffect('💧', `水 +${gainedWater} を獲得！`);
       setTimeout(nextTurn, 1200);
 
     } else if (type === 'raft') {
       state.raft += 1;
       const hasAxe = p.items.some(i => i.id === 'axe');
       
-      if (Math.random() < 0.35 && !hasAxe) { // 35%で毒ヘビ
-        log(`🐍 <b>ハプニング！</b> ${p.name} は森で毒ヘビに噛まれた！治療のために水を1消費...`);
+      if (Math.random() < 0.35 && !hasAxe) {
+        log(`🐍 <b>ハプニング！</b> ${p.name} は毒ヘビに噛まれた！治療のために水を1消費...`);
         state.water = Math.max(0, state.water - 1);
         showEffect('🐍', '毒ヘビに噛まれた！（水-1）');
       } else {
@@ -457,7 +498,6 @@
       p.items.push(newItem);
       log(`${p.name}: アイテムを1枚獲得した（内容は秘密）`);
       
-      // 本人だけに何を引いたか見せる画面に切り替え
       document.getElementById('actionScreen').style.display = 'none';
       document.getElementById('drawSecretScreen').style.display = 'block';
       document.getElementById('drawnItemCard').innerHTML = `
@@ -467,6 +507,25 @@
         </div>
       `;
     }
+  }
+
+  // 魚釣り画面を開く
+  function openFishScreen() {
+    document.getElementById('actionScreen').style.display = 'none';
+    document.getElementById('fishScreen').style.display = 'block';
+  }
+
+  // 魚釣りカプセル選択（0〜3個がランダム決定）
+  function selectFishCapsule() {
+    const p = state.players[state.currentTurnIndex];
+    const caught = Math.floor(Math.random() * 4); // 0〜3個
+    state.food += caught;
+    
+    log(`${p.name}: 釣りのカプセルを選択し、魚を ${caught} 匹釣り上げた！`);
+    document.getElementById('fishScreen').style.display = 'none';
+    
+    showEffect('🐟', `魚を ${caught} 匹ゲット！`);
+    setTimeout(nextTurn, 1200);
   }
 
   function finishTurnAfterDraw() {
@@ -495,7 +554,7 @@
     const alivePlayers = state.players.filter(p => p.alive);
     const needed = alivePlayers.length;
 
-    log(`<b>--- 1日が終了（必要数: 💧${needed} / 🐟${needed}）---</b>`);
+    log(`<b>--- ${state.currentRound}ターン目が終了（必要数: 💧${needed} / 🐟${needed}）---</b>`);
     state.water -= needed;
     state.food -= needed;
 
@@ -505,10 +564,15 @@
       return;
     }
 
-    state.daysLeft -= 1;
-    if (state.daysLeft <= 0) {
+    advanceRound();
+  }
+
+  function advanceRound() {
+    if (state.isStorm) {
       endGame();
     } else {
+      state.currentRound += 1;
+      determineWeatherForRound(); // 次ターンの天候・嵐の判定
       state.currentTurnIndex = state.players.findIndex(p => p.alive);
       prepareTurn();
     }
@@ -587,22 +651,16 @@
     if (state.water < 0) state.water = 0;
     if (state.food < 0) state.food = 0;
 
-    state.daysLeft -= 1;
-    if (state.daysLeft <= 0) {
-      endGame();
-    } else {
-      state.currentTurnIndex = state.players.findIndex(p => p.alive);
-      prepareTurn();
-    }
+    advanceRound();
   }
 
   function endGame() {
     const alive = state.players.filter(p => p.alive);
-    log(`<b>🌪️ ハリケーンが到着！ゲーム終了！</b>`);
+    log(`<b>🌪️ 嵐（最終ターン）が終了！脱出判定を行います！</b>`);
     if (state.raft >= alive.length) {
-      log(`<span style="color:#4ade80;">🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で脱出成功！</span>`);
+      log(`<span style="color:#4ade80;">🎉 生存者${alive.length}人全員がイカダ（${state.raft}艘）で無事に脱出成功！勝者！</span>`);
     } else {
-      log(`<span style="color:#f87171;">💀 イカダが不足し全員が嵐に飲み込まれた...</span>`);
+      log(`<span style="color:#f87171;">💀 イカダ不足のため全員が嵐に飲み込まれた... GAME OVER</span>`);
     }
     document.getElementById('passScreen').style.display = 'none';
     document.getElementById('actionScreen').style.display = 'none';
@@ -613,15 +671,15 @@
     document.getElementById('water').innerText = Math.floor(state.water);
     document.getElementById('food').innerText = Math.floor(state.food);
     document.getElementById('raft').innerText = state.raft;
-    document.getElementById('days').innerText = `${state.daysLeft}日`;
+    document.getElementById('days').innerText = `${state.currentRound}日目`;
 
-    const aliveCount = state.players.filter(p => p.alive).length;
-    const waterDiff = state.water - aliveCount;
-    const foodDiff = state.food - aliveCount;
+    const aliveCount = state.players.filter(p => p.alive);
+    const waterDiff = state.water - aliveCount.length;
+    const foodDiff = state.food - aliveCount.length;
 
     let predText = "";
     if (waterDiff >= 0 && foodDiff >= 0) {
-      predText = `✅ 今夜の資源は十分です。（全員無事）<br>🪵 必要イカダ数: ${aliveCount}艘 (現在: ${state.raft}艘)`;
+      predText = `✅ 今夜の資源は十分です。<br>🪵 必要イカダ: ${aliveCount.length}艘 (現在: ${state.raft}艘)`;
     } else {
       const shortWater = waterDiff < 0 ? Math.abs(waterDiff) : 0;
       const shortFood = foodDiff < 0 ? Math.abs(foodDiff) : 0;
